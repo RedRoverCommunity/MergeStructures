@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>merge-structure-maven-plugin</artifactId>
+    <packaging>maven-plugin</packaging>
     <name>merge-structure Maven Plugin</name>
 
     <!-- TODO: replace with actual website if one planned  -->

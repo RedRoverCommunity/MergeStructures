@@ -9,7 +9,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.util.List;
 
-@Mojo(name = "merge", defaultPhase = LifecyclePhase.COMPILE)
+@Mojo(name = "append", defaultPhase = LifecyclePhase.COMPILE)
 public class AppendGoal extends AbstractMojo {
     // A mojo has to implement the Mojo interface.
     // In our case, we’ll extend from AbstractMojo so we’ll only have to implement the execute method
