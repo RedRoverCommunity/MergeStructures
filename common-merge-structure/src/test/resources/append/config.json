@@ -1,0 +1,8 @@
+[
+  {
+    "strategy": "append",
+    "sourceFile": "./source.yaml",
+    "targetFile": "./target.yaml",
+    "resultFile": "./actualResult.yaml"
+  }
+]

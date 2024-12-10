@@ -1,0 +1,94 @@
+
+company: RedRover.community
+structure:
+  - yaml
+  - json
+
+strategy:
+  - append:
+      description: Merge 2 structures that do not have matching keys
+      error: If matching keys were found in the structures
+      example:
+        source: |
+          root1:
+            key: value
+
+        target: |
+          root2:
+            key: value
+
+        result: |
+          root1:
+            key: value
+          root2:
+            key: value
+
+        errorTarget: |
+          root1:
+            key: value
+
+  - extend:
+      description: Merge 2 structures that have matching keys
+      error: If non-matching keys were found in the structures
+      example:
+        source: |
+          root:
+            key1: value1
+
+        target: |
+          root:
+            key2: value2
+
+        result: |
+          root:
+            key1: value1
+            key2: value2
+
+        errorTarget: |
+          root1:
+            key: value
+
+  - merge:
+      description: Merge 2 structures
+      error: If matching keys were found in the structures
+      example:
+        source: |
+          root:
+            key1: value1
+
+        target: |
+          root:
+            key2: value2
+          root2:
+            key3: value3
+
+        result: |
+          root:
+            key1: value1
+            key2: value2
+          root2:
+            key3: value3
+
+        errorTarget: |
+          root:
+            key1: value1
+
+  - replace:
+      description: Merge 2 structures
+      error: If non-matching keys were found in the structures
+      example:
+        source: |
+          root:
+            key: value
+
+        target: |
+          root:
+            key: value2
+
+        result: |
+          root:
+            key: value2
+
+        errorTarget: |
+          root:
+            key1: value
