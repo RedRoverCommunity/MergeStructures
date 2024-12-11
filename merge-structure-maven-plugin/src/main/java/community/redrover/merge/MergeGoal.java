@@ -6,15 +6,15 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 import java.util.List;
 
-@Mojo(name = "append", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
-public class AppendGoal extends BaseGoal {
+@Mojo(name = "merge", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
+public class MergeGoal extends BaseGoal {
 
     @Override
     public void execute() {
 
         // The getLog() method provides access to the Maven log. The AbstractMojo already handles its lifecycle.
         getLog().info("""
-        Running Append strategy with
+        Running Merge strategy with
             input file1: %s
             input file2: %s
             outputting results into file: %s
@@ -30,5 +30,4 @@ public class AppendGoal extends BaseGoal {
             getLog().info("Dependency: " + dependency.getGroupId() + ":" + dependency.getArtifactId() + ":" + dependency.getVersion());
         }
     }
-
 }
