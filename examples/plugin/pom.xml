@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>community.redrover.merge</groupId>
+    <artifactId>merge-structure-examples</artifactId>
+    <version>${revision}</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <revision>DEV</revision>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>community.redrover.merge</groupId>
+            <artifactId>merge-structure-maven-plugin</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+<!--            <systemPath>${project.basedir}/../../merge-structure-maven-plugin/target/merge-structure-maven-plugin-DEV.jar</systemPath>-->
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>community.redrover.merge</groupId>
+                <artifactId>merge-structure-maven-plugin</artifactId>
+                <version>${revision}</version>
+                <configuration>
+                    <fileIn1>/some/path/file1.yml</fileIn1>
+                    <fileIn2>/some/other/path/file2.yml</fileIn2>
+                    <fileIn2>/results/path/result.yml</fileIn2>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>merge</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>append</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>append</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
