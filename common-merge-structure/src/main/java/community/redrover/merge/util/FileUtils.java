@@ -11,14 +11,7 @@ import java.util.Map;
 public class FileUtils {
 
     public static Map<String, Object> loadFileToMap(String filePath) throws IOException {
-        File file = new File(filePath);
-        if (!file.exists() || file.isDirectory()) {
-            throw new IllegalArgumentException("Invalid file path provided: " + filePath);
-        }
-
-        if (file.length() == 0) {
-            throw new IOException("File is empty: " + filePath);
-        }
+        File file = getFile(filePath);
 
         String fileExtension = getFileExtension(filePath);
         switch (fileExtension.toLowerCase()) {
@@ -32,6 +25,42 @@ public class FileUtils {
             }
             default -> throw new IllegalArgumentException("Unsupported file format: " + fileExtension);
         }
+    }
+
+    /**
+     * Load file to object
+     * @param filePath Absolute file path and name to load
+     * @param clazz Class to load to
+     * @return  return deserialized object
+     * @param <T>   Type of object to load to
+     * @throws IOException if file is not found or cannot be read
+     */
+    public static <T> T loadFileToObject(String filePath, Class<T> clazz) throws IOException {
+        if (clazz == null) {
+            throw new IllegalArgumentException("Class cannot be null");
+        }
+
+        final String fileName = filePath.trim().toLowerCase();
+        File file = getFile(fileName);
+
+        SUPPORTED_EXTENTION extention = SUPPORTED_EXTENTION.valueOf(getFileExtension(fileName).toUpperCase());
+        return extention.getObjectMapper().readValue(file, clazz);
+    }
+
+    private static File getFile(String fileName) throws IOException {
+        if (fileName.isEmpty()) {
+            throw new IllegalArgumentException("File name cannot be null or empty");
+        }
+
+        File file = new File(fileName);
+
+        if (!file.exists() || file.isDirectory()) {
+            throw new IllegalArgumentException("Invalid file path provided: " + file.getPath());
+        } else if (file.length() == 0) {
+            throw new IOException("File is empty: " + file.getPath());
+        }
+
+        return file;
     }
 
     private static Map<String, Object> parseJsonFile(File file) throws IOException {
