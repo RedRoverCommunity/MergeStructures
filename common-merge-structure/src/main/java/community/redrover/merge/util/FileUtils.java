@@ -5,7 +5,12 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class FileUtils {
@@ -43,24 +48,32 @@ public class FileUtils {
         final String fileName = filePath.trim().toLowerCase();
         File file = getFile(fileName);
 
-        SUPPORTED_EXTENTION extention = SUPPORTED_EXTENTION.valueOf(getFileExtension(fileName).toUpperCase());
-        return extention.getObjectMapper().readValue(file, clazz);
+        final SupportedExtension EXTENSION = SupportedExtension.fromValue(getFileExtension(fileName));
+        return EXTENSION.getObjectMapper().readValue(file, clazz);
     }
 
     private static File getFile(String fileName) throws IOException {
-        if (fileName.isEmpty()) {
+        Objects.requireNonNull(fileName, "File name cannot be null");
+
+        if (fileName.isBlank()) {
             throw new IllegalArgumentException("File name cannot be null or empty");
         }
 
-        File file = new File(fileName);
+        Path path = Paths.get(fileName);
 
-        if (!file.exists() || file.isDirectory()) {
-            throw new IllegalArgumentException("Invalid file path provided: " + file.getPath());
-        } else if (file.length() == 0) {
-            throw new IOException("File is empty: " + file.getPath());
+        if (!Files.exists(path)) {
+            throw new IllegalArgumentException("Nonexisting file path provided: " + path);
+        } else if (!Files.isReadable(path)) {
+            throw new UncheckedIOException(new IOException("File is not readable: " + path));
+        } else if (!Files.isRegularFile(path)) {
+            throw new UncheckedIOException(new IOException("File is not a regular file: " + path));
+        } else if (Files.isDirectory(path)) {
+            throw new UncheckedIOException(new IOException("File is a directory: " + path));
+        } else if (Files.size(path) == 0) {
+            throw new UncheckedIOException(new IOException("File is empty: " + path));
         }
 
-        return file;
+        return path.toFile();
     }
 
     private static Map<String, Object> parseJsonFile(File file) throws IOException {
