@@ -19,17 +19,11 @@ public class FileUtils {
         File file = getFile(filePath);
 
         String fileExtension = getFileExtension(filePath);
-        switch (fileExtension.toLowerCase()) {
-            case "json" -> {
-
-                return parseJsonFile(file);
-            }
-            case "yaml", "yml" -> {
-
-                return parseYamlFile(file);
-            }
+        return switch (fileExtension.toLowerCase()) {
+            case "json" -> parseJsonFile(file);
+            case "yaml", "yml" ->parseYamlFile(file);
             default -> throw new IllegalArgumentException("Unsupported file format: " + fileExtension);
-        }
+        };
     }
 
     /**
