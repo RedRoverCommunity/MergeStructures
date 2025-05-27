@@ -79,7 +79,7 @@ strategy:
       example:
         source: |
           root:
-            key: value
+            key: value1
 
         target: |
           root:
@@ -87,8 +87,8 @@ strategy:
 
         result: |
           root:
-            key: value2
+            key: value1
 
         errorTarget: |
           root:
-            key1: value
+            key1: value1
