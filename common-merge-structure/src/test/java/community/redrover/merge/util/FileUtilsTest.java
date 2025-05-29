@@ -6,14 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -71,8 +70,9 @@ public class FileUtilsTest {
     void testEmptyFileThrowsIOException() throws IOException {
         Path emptyFile = createTempFileWithContent("empty_file", ".test", "");
 
-        IOException exception = assertThrows(
-                IOException.class, () -> FileUtils.loadFileToMap(emptyFile.toString()));
+        UncheckedIOException exception = assertThrows(
+                UncheckedIOException.class, () -> FileUtils.loadFileToMap(emptyFile.toString()));
+
         assertTrue(exception.getMessage().contains("File is empty"));
 
         deleteTempFile(emptyFile);
@@ -154,7 +154,55 @@ public class FileUtilsTest {
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class, () -> FileUtils.loadFileToMap(nonExistentFilePath));
-        assertTrue(exception.getMessage().contains("Invalid file path provided"));
+        assertTrue(exception.getMessage().contains("Nonexisting file path provided"));
+    }
+
+    @Test
+    void testWriteJsonFileFromMap() throws IOException {
+        Map<String, Object> data = Map.of(
+                "key1", "value1",
+                "key2", Map.of("nestedKey", "nestedValue")
+        );
+
+        Path tempJsonFile = Files.createTempFile("write_test", ".json");
+
+        FileUtils.writeMapToFile(tempJsonFile.toString(), data);
+
+        Map<String, Object> result = FileUtils.loadFileToMap(tempJsonFile.toString());
+        assertEquals(data, result);
+
+        deleteTempFile(tempJsonFile);
+    }
+
+    @Test
+    void testWriteYamlFileFromMap() throws IOException {
+        Map<String, Object> data = Map.of(
+                "key1", "value1",
+                "key2", Map.of("nestedKey", "nestedValue")
+        );
+
+        Path tempYamlFile = Files.createTempFile("write_test", ".yaml");
+
+        FileUtils.writeMapToFile(tempYamlFile.toString(), data);
+
+        Map<String, Object> result = FileUtils.loadFileToMap(tempYamlFile.toString());
+        assertEquals(data, result);
+
+        deleteTempFile(tempYamlFile);
+    }
+
+    @Test
+    void testWriteUnsupportedFormatThrowsException() throws IOException {
+        Map<String, Object> data = Map.of("key", "value");
+
+        Path tempTxtFile = Files.createTempFile("write_test", ".txt");
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+                FileUtils.writeMapToFile(tempTxtFile.toString(), data));
+
+        assertTrue(ex.getMessage().contains("Unsupported file format"));
+
+        deleteTempFile(tempTxtFile);
     }
 
     @Test
