@@ -12,12 +12,12 @@ import java.util.Objects;
 @Getter
 public enum SupportedExtension {
 
-    JSON(".json", createJsonMapper()),
-    YAML(".yaml", createYamlMapper()),
-    YML(".yml", createYamlMapper());
+    JSON("json", createJsonMapper()),
+    YAML("yaml", createYamlMapper()),
+    YML("yml", createYamlMapper());
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-    private static final ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
+    private static ObjectMapper JSON_MAPPER;
+    private static ObjectMapper YAML_MAPPER;
 
     private final String value;
     private final ObjectMapper objectMapper;
@@ -28,19 +28,25 @@ public enum SupportedExtension {
     }
 
     private static ObjectMapper createJsonMapper() {
+        if (JSON_MAPPER == null) {
+            JSON_MAPPER = new ObjectMapper();
+        }
         return JSON_MAPPER
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
     private static ObjectMapper createYamlMapper() {
+        if (YAML_MAPPER == null) {
+            YAML_MAPPER = new ObjectMapper(new YAMLFactory());
+        }
         return YAML_MAPPER
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
     public static SupportedExtension fromValue(String value) {
-        return Arrays.stream(values())
+        return Arrays.stream(SupportedExtension.values())
                 .filter(ext -> ext.getValue().equalsIgnoreCase(value))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported extension: " + value));

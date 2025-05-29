@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -71,8 +72,8 @@ public class FileUtilsTest {
     void testEmptyFileThrowsIOException() throws IOException {
         Path emptyFile = createTempFileWithContent("empty_file", ".test", "");
 
-        IOException exception = assertThrows(
-                IOException.class, () -> FileUtils.loadFileToMap(emptyFile.toString()));
+        UncheckedIOException exception = assertThrows(
+                UncheckedIOException.class, () -> FileUtils.loadFileToMap(emptyFile.toString()));
         assertTrue(exception.getMessage().contains("File is empty"));
 
         deleteTempFile(emptyFile);
@@ -154,7 +155,7 @@ public class FileUtilsTest {
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class, () -> FileUtils.loadFileToMap(nonExistentFilePath));
-        assertTrue(exception.getMessage().contains("Invalid file path provided"));
+        assertTrue(exception.getMessage().contains("Nonexisting file path provided"));
     }
 
     @Test
@@ -204,15 +205,15 @@ public class FileUtilsTest {
         deleteTempFileIfExists("wrong", ".ext");
 
         final Path emptyJsonFile = createTempFileWithContent("empty_file", ".json", "");
-        Assertions.assertThrows(IOException.class, () -> FileUtils.loadFileToObject(emptyJsonFile.toString(), TestConfig.class));
+        Assertions.assertThrows(UncheckedIOException.class, () -> FileUtils.loadFileToObject(emptyJsonFile.toString(), TestConfig.class));
         deleteTempFileIfExists("empty_file", ".json");
 
         final Path emptyYamlFile1 = createTempFileWithContent("empty_file", ".yaml", "");
-        Assertions.assertThrows(IOException.class, () -> FileUtils.loadFileToObject(emptyYamlFile1.toString(), TestConfig.class));
+        Assertions.assertThrows(UncheckedIOException.class, () -> FileUtils.loadFileToObject(emptyYamlFile1.toString(), TestConfig.class));
         deleteTempFileIfExists("empty_file", ".yaml");
 
         final Path emptyYamlFile2 = createTempFileWithContent("empty_file", ".yml", "");
-        Assertions.assertThrows(IOException.class, () -> FileUtils.loadFileToObject(emptyYamlFile2.toString(), TestConfig.class));
+        Assertions.assertThrows(UncheckedIOException.class, () -> FileUtils.loadFileToObject(emptyYamlFile2.toString(), TestConfig.class));
         deleteTempFileIfExists("empty_file", ".yml");
     }
 }
