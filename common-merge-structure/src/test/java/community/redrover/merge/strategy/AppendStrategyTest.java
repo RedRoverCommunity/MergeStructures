@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AppendStrategyTest {
 
     static class StrategyConfig {
+        public String strategy;
         public String sourceFile;
         public String targetFile;
         public String actualResultFile;
