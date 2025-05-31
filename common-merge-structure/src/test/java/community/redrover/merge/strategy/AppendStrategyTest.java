@@ -1,45 +1,45 @@
 package community.redrover.merge.strategy;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import community.redrover.merge.model.config.AppendStrategyConfig;
 import community.redrover.merge.util.FileUtils;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class AppendStrategyTest {
 
-    static class StrategyConfig {
-        public String strategy;
-        public String sourceFile;
-        public String targetFile;
-        public String actualResultFile;
-        public String expectedResultFile;
-        public String errorTargetFile;
+    @Getter
+    @NoArgsConstructor
+    static class AppendStrategyTestConfig extends AppendStrategyConfig {
+        private String actualResultFile;
+        private String expectedResultFile;
+        private String errorTargetFile;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"yaml", "json"})
     public void testAppendStrategy_PositiveAndNegativeCases(String format) throws IOException {
-        String basePath = "src/test/resources/append/" + format + "/";
-        String configPath = basePath + "config.json";
+        Path basePath = Paths.get("src/test/resources/append", format);
 
         ObjectMapper mapper = new ObjectMapper();
-        List<StrategyConfig> configs = mapper.readValue(new File(configPath), new TypeReference<>() {});
-        StrategyConfig config = configs.get(0);
+        AppendStrategyTestConfig config = mapper.readValue(basePath.resolve("config.json").toFile(),
+                AppendStrategyTestConfig.class);
 
-        String source = Paths.get(basePath, config.sourceFile).toString();
-        String target = Paths.get(basePath, config.targetFile).toString();
-        String result = Paths.get(basePath, config.actualResultFile).toString();
-        String expected = Paths.get(basePath, config.expectedResultFile).toString();
-        String errorTarget = Paths.get(basePath, config.errorTargetFile).toString();
+        String source = basePath.resolve(config.getSourceFile()).toString();
+        String target = basePath.resolve(config.getTargetFile()).toString();
+        String result = basePath.resolve(config.getActualResultFile()).toString();
+        String expected = basePath.resolve(config.getExpectedResultFile()).toString();
+        String errorTarget = basePath.resolve(config.getErrorTargetFile()).toString();
 
         Map<String, Object> sourceMap = FileUtils.loadFileToMap(source);
         Map<String, Object> targetMap = FileUtils.loadFileToMap(target);

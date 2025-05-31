@@ -1,10 +1,8 @@
-[
-  {
-    "strategy": "append",
-    "sourceFile": "./source.yaml",
-    "targetFile": "./target.yaml",
-    "errorTargetFile": "./errorTarget.yaml",
-    "expectedResultFile": "./expectedResult.yaml",
-    "actualResultFile": "./actualResult.yaml"
-  }
-]
+{
+  "strategy": "Append",
+  "sourceFile": "./source.yaml",
+  "targetFile": "./target.yaml",
+  "errorTargetFile": "./errorTarget.yaml",
+  "expectedResultFile": "./expectedResult.yaml",
+  "actualResultFile": "./actualResult.yaml"
+}
