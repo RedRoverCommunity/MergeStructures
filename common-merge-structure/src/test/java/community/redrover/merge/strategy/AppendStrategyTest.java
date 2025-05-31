@@ -37,8 +37,8 @@ public class AppendStrategyTest {
 
         String source = basePath.resolve(config.getSourceFile()).toString();
         String target = basePath.resolve(config.getTargetFile()).toString();
-        String result = basePath.resolve(config.getActualResultFile()).toString();
-        String expected = basePath.resolve(config.getExpectedResultFile()).toString();
+        String actualResult = basePath.resolve(config.getActualResultFile()).toString();
+        String expectedResult = basePath.resolve(config.getExpectedResultFile()).toString();
         String errorTarget = basePath.resolve(config.getErrorTargetFile()).toString();
 
         Map<String, Object> sourceMap = FileUtils.loadFileToMap(source);
@@ -46,10 +46,10 @@ public class AppendStrategyTest {
 
         Map<String, Object> mergedResult = new LinkedHashMap<>(sourceMap);
         mergedResult.putAll(targetMap);
-        FileUtils.writeMapToFile(result, mergedResult);
+        FileUtils.writeMapToFile(actualResult, mergedResult);
 
-        Map<String, Object> actualMap = FileUtils.loadFileToMap(result);
-        Map<String, Object> expectedMap = FileUtils.loadFileToMap(expected);
+        Map<String, Object> actualMap = FileUtils.loadFileToMap(actualResult);
+        Map<String, Object> expectedMap = FileUtils.loadFileToMap(expectedResult);
 
         assertEquals(expectedMap, actualMap);
 
