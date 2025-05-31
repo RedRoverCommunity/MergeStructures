@@ -3,6 +3,7 @@ package community.redrover.merge.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.yaml.snakeyaml.Yaml;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -24,6 +25,24 @@ public class FileUtils {
             case "yaml", "yml" ->parseYamlFile(file);
             default -> throw new IllegalArgumentException("Unsupported file format: " + fileExtension);
         };
+    }
+
+    public static void writeMapToFile(String filePath, Map<String, Object> data) throws IOException {
+        String extension = getFileExtension(filePath).toLowerCase();
+
+        switch (extension) {
+            case "json" -> {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), data);
+            }
+            case "yaml", "yml" -> {
+                Yaml yaml = new Yaml();
+                try (FileWriter writer = new FileWriter(filePath)) {
+                    yaml.dump(data, writer);
+                }
+            }
+            default -> throw new IllegalArgumentException("Unsupported file format: " + extension);
+        }
     }
 
     /**
