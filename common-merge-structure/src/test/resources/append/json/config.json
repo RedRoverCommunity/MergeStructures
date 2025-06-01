@@ -1,0 +1,8 @@
+{
+  "strategy": "Append",
+  "sourceFile": "./source.json",
+  "targetFile": "./target.json",
+  "errorTargetFile": "./errorTarget.json",
+  "expectedResultFile": "./expectedResult.json",
+  "actualResultFile": "./actualResult.json"
+}
