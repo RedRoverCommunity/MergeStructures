@@ -1,0 +1,8 @@
+[
+  {
+    "strategy": "merge",
+    "sourceFile": "./source.json",
+    "targetFile": "./target.json",
+    "resultFile": "./actualResult.json"
+  }
+]
