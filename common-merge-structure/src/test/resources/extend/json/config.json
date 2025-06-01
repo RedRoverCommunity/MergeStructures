@@ -1,0 +1,8 @@
+[
+  {
+    "strategy": "extend",
+    "sourceFile": "./source.json",
+    "targetFile": "./target.json",
+    "resultFile": "./actualResult.json"
+  }
+]
