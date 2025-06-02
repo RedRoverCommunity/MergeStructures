@@ -56,23 +56,12 @@ public class AppendStrategyTest {
         AppendStrategy strategy = new AppendStrategy(config, basePath);
         strategy.execute();
 
-        String actualResult = basePath.resolve(config.getActualResultFile()).toString();
-        String expectedResult = basePath.resolve(config.getExpectedResultFile()).toString();
-
-        Map<String, Object> actualMap = FileUtils.loadFileToMap(actualResult);
-        Map<String, Object> expectedMap = FileUtils.loadFileToMap(expectedResult);
-
-        assertEquals(expectedMap, actualMap);
-
-        String source = basePath.resolve(config.getSourceFile()).toString();
-        String errorTarget = basePath.resolve(config.getErrorTargetFile()).toString();
-
-        Map<String, Object> sourceMap = FileUtils.loadFileToMap(source);
-        Map<String, Object> errorTargetMap = FileUtils.loadFileToMap(errorTarget);
+        assertEquals(FileUtils.loadFileToMap(basePath.resolve(config.getExpectedResultFile())),
+                FileUtils.loadFileToMap(basePath.resolve(config.getActualResultFile())));
 
         assertThrows(IllegalStateException.class, () -> {
-            Map<String, Object> intersection = new LinkedHashMap<>(sourceMap);
-            intersection.keySet().retainAll(errorTargetMap.keySet());
+            Map<String, Object> intersection = new LinkedHashMap<>(FileUtils.loadFileToMap(basePath.resolve(config.getSourceFile())));
+            intersection.keySet().retainAll(FileUtils.loadFileToMap(basePath.resolve(config.getErrorTargetFile())).keySet());
 
             if (!intersection.isEmpty()) {
                 throw new IllegalStateException("AppendStrategy error: Matching keys found: " + intersection.keySet());

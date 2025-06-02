@@ -71,7 +71,7 @@ public class FileUtilsTest {
         Path emptyFile = createTempFileWithContent("empty_file", ".test", "");
 
         UncheckedIOException exception = assertThrows(
-                UncheckedIOException.class, () -> FileUtils.loadFileToMap(emptyFile.toString()));
+                UncheckedIOException.class, () -> FileUtils.loadFileToMap(emptyFile));
 
         assertTrue(exception.getMessage().contains("File is empty"));
 
@@ -89,7 +89,7 @@ public class FileUtilsTest {
                 }
                 """);
 
-        Map<String, Object> result = FileUtils.loadFileToMap(tempJsonFile.toString());
+        Map<String, Object> result = FileUtils.loadFileToMap(tempJsonFile);
 
         assertEquals(2, result.size());
         assertEquals("value1", result.get("key1"));
@@ -106,7 +106,7 @@ public class FileUtilsTest {
                   nestedKey: nestedValue
                 """);
 
-        Map<String, Object> result = FileUtils.loadFileToMap(tempYamlFile.toString());
+        Map<String, Object> result = FileUtils.loadFileToMap(tempYamlFile);
 
         assertEquals(2, result.size());
         assertEquals("value1", result.get("key1"));
@@ -120,7 +120,7 @@ public class FileUtilsTest {
         Path noExtTempFile = createTempFileWithContent("test", "", "key1: value1");
 
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () -> FileUtils.loadFileToMap(noExtTempFile.toString()));
+                IllegalArgumentException.class, () -> FileUtils.loadFileToMap(noExtTempFile));
         assertTrue(exception.getMessage().contains("File does not have a valid extension"));
 
         deleteTempFile(noExtTempFile);
@@ -131,7 +131,7 @@ public class FileUtilsTest {
         Path endDotTempFile = createTempFileWithContent("test", ".", "key1: value1");
 
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () -> FileUtils.loadFileToMap(endDotTempFile.toString()));
+                IllegalArgumentException.class, () -> FileUtils.loadFileToMap(endDotTempFile));
         assertTrue(exception.getMessage().contains("File does not have a valid extension"));
 
         deleteTempFile(endDotTempFile);
@@ -142,7 +142,7 @@ public class FileUtilsTest {
         Path tempTxtFile = createTempFileWithContent("test", ".txt", "key1: value1");
 
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () -> FileUtils.loadFileToMap(tempTxtFile.toString()));
+                IllegalArgumentException.class, () -> FileUtils.loadFileToMap(tempTxtFile));
         assertTrue(exception.getMessage().contains("Unsupported file format"));
 
         deleteTempFile(tempTxtFile);
@@ -150,7 +150,7 @@ public class FileUtilsTest {
 
     @Test
     void testNonExistentFileThrowsException() {
-        String nonExistentFilePath = "/path/to/nonexistent/file.json";
+        Path nonExistentFilePath = Path.of("/path/to/nonexistent/file.json");
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class, () -> FileUtils.loadFileToMap(nonExistentFilePath));
@@ -165,11 +165,9 @@ public class FileUtilsTest {
         );
 
         Path tempJsonFile = Files.createTempFile("write_test", ".json");
+        FileUtils.writeMapToFile(tempJsonFile, data);
 
-        FileUtils.writeMapToFile(tempJsonFile.toString(), data);
-
-        Map<String, Object> result = FileUtils.loadFileToMap(tempJsonFile.toString());
-        assertEquals(data, result);
+        assertEquals(data, FileUtils.loadFileToMap(tempJsonFile));
 
         deleteTempFile(tempJsonFile);
     }
@@ -183,22 +181,20 @@ public class FileUtilsTest {
 
         Path tempYamlFile = Files.createTempFile("write_test", ".yaml");
 
-        FileUtils.writeMapToFile(tempYamlFile.toString(), data);
+        FileUtils.writeMapToFile(tempYamlFile, data);
 
-        Map<String, Object> result = FileUtils.loadFileToMap(tempYamlFile.toString());
-        assertEquals(data, result);
+        assertEquals(data, FileUtils.loadFileToMap(tempYamlFile));
 
         deleteTempFile(tempYamlFile);
     }
 
     @Test
     void testWriteUnsupportedFormatThrowsException() throws IOException {
-        Map<String, Object> data = Map.of("key", "value");
 
         Path tempTxtFile = Files.createTempFile("write_test", ".txt");
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                FileUtils.writeMapToFile(tempTxtFile.toString(), data));
+                FileUtils.writeMapToFile(tempTxtFile, Map.of("key", "value")));
 
         assertTrue(ex.getMessage().contains("Unsupported file format"));
 
@@ -232,14 +228,13 @@ public class FileUtilsTest {
                 name: "John"
                 version: 1
                 """);
-        final TestConfig testConfig = new TestConfig("John", 1);
 
         File yamlFile = new File(tempYamlFile.toString());
         TestConfig yamlConfig = FileUtils.loadFileToObject(yamlFile.getPath(), TestConfig.class);
         deleteTempFileIfExists("test", ".yaml");
 
         Assertions.assertNotNull(yamlConfig);
-        Assertions.assertEquals(testConfig, yamlConfig);
+        Assertions.assertEquals(new TestConfig("John", 1), yamlConfig);
     }
 
     @Test
