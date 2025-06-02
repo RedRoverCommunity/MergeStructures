@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
 
-
 public class FileUtils {
 
     public static Map<String, Object> loadFileToMap(Path path) throws IOException {
