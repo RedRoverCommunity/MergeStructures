@@ -84,19 +84,19 @@ public class FileUtilsTest {
     @Test
     void testValidJsonFileReturnsExpectedMap() throws IOException {
         Path tempJsonFile = createTempFileWithContent("test", ".json", """
-            {
-              "key1": "value1",
-              "key2": {
-                "nestedKey": "nestedValue"
-              }
-            }
-            """);
+        {
+          "key1": "value1",
+          "key2": {
+            "nestedKey": "nestedValue"
+          }
+        }
+        """);
         try {
-            Map<String, Object> result = FileUtils.loadFileToMap(tempJsonFile);
+            LinkedHashMap<String, Object> result = FileUtils.loadFileToMap(tempJsonFile);
 
             assertEquals(2, result.size());
             assertEquals("value1", result.get("key1"));
-            assertEquals("nestedValue", ((Map<?, ?>) result.get("key2")).get("nestedKey"));
+            assertEquals("nestedValue", ((LinkedHashMap<?, ?>) result.get("key2")).get("nestedKey"));
         } finally {
             deleteTempFile(tempJsonFile);
         }
@@ -105,16 +105,16 @@ public class FileUtilsTest {
     @Test
     void testValidYamlFileReturnsExpectedMap() throws IOException {
         Path tempYamlFile = createTempFileWithContent("test", ".yaml", """
-            key1: value1
-            key2:
-              nestedKey: nestedValue
-            """);
+        key1: value1
+        key2:
+          nestedKey: nestedValue
+        """);
         try {
-            Map<String, Object> result = FileUtils.loadFileToMap(tempYamlFile);
+            LinkedHashMap<String, Object> result = FileUtils.loadFileToMap(tempYamlFile);
 
             assertEquals(2, result.size());
             assertEquals("value1", result.get("key1"));
-            assertEquals("nestedValue", ((Map<?, ?>) result.get("key2")).get("nestedKey"));
+            assertEquals("nestedValue", ((LinkedHashMap<?, ?>) result.get("key2")).get("nestedKey"));
         } finally {
             deleteTempFile(tempYamlFile);
         }

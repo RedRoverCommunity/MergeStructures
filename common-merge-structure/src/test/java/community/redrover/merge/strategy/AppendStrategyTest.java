@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,7 +31,7 @@ public class AppendStrategyTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"yaml", "json"})
-    public void testAppendStrategy_PositiveAndNegativeCases(String format) {
+    void testAppendStrategyPositiveAndNegativeCases(String format) {
         Path basePath = Paths.get("src/test/resources/append", format);
         Path configPath = basePath.resolve("config." + format);
 
@@ -41,15 +40,19 @@ public class AppendStrategyTest {
         AppendStrategy strategy = new AppendStrategy(config, basePath);
         strategy.execute();
 
-        assertEquals(FileUtils.loadFileToMap(basePath.resolve(config.getExpectedResultFile())),
-                FileUtils.loadFileToMap(basePath.resolve(config.getActualResultFile())));
+        LinkedHashMap<String, Object> expected = FileUtils.loadFileToMap(basePath.resolve(config.getExpectedResultFile()));
+        LinkedHashMap<String, Object> actual = FileUtils.loadFileToMap(basePath.resolve(config.getActualResultFile()));
+
+        assertEquals(expected, actual);
 
         assertThrows(IllegalStateException.class, () -> {
-            Map<String, Object> intersection = new LinkedHashMap<>(FileUtils.loadFileToMap(basePath.resolve(config.getSourceFile())));
-            intersection.keySet().retainAll(FileUtils.loadFileToMap(basePath.resolve(config.getErrorTargetFile())).keySet());
+            LinkedHashMap<String, Object> sourceMap = FileUtils.loadFileToMap(basePath.resolve(config.getSourceFile()));
+            LinkedHashMap<String, Object> errorTargetMap = FileUtils.loadFileToMap(basePath.resolve(config.getErrorTargetFile()));
 
-            if (!intersection.isEmpty()) {
-                throw new IllegalStateException("AppendStrategy error: Matching keys found: " + intersection.keySet());
+            sourceMap.keySet().retainAll(errorTargetMap.keySet());
+
+            if (!sourceMap.isEmpty()) {
+                throw new IllegalStateException("AppendStrategy error: Matching keys found: " + sourceMap.keySet());
             }
         });
     }
