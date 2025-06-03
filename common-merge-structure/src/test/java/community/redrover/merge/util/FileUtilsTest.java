@@ -237,7 +237,6 @@ public class FileUtilsTest {
         }
     }
 
-
     @Test
     void testLoadYamlFileToObject() throws IOException {
         Path tempYamlFile = createTempFileWithContent("test", ".yaml", """
