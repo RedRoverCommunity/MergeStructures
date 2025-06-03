@@ -21,13 +21,10 @@ public class AppendStrategy extends AbstractStrategy<AppendStrategyConfig> {
 
     @Override
     public void execute() {
-        Path sourcePath = basePath.resolve(getConfig().getSourceFile());
-        Path targetPath = basePath.resolve(getConfig().getTargetFile());
-        Path resultPath = basePath.resolve(getConfig().getResultFile());
+        Map<String, Object> mergedResult = new LinkedHashMap<>(FileUtils.loadFileToMap(basePath.resolve(getConfig().getSourceFile())));
 
-        Map<String, Object> mergedResult = new LinkedHashMap<>(FileUtils.loadFileToMap(sourcePath));
-        mergedResult.putAll(FileUtils.loadFileToMap(targetPath));
+        mergedResult.putAll(FileUtils.loadFileToMap(basePath.resolve(getConfig().getTargetFile())));
 
-        FileUtils.writeMapToFile(resultPath, mergedResult);
+        FileUtils.writeMapToFile(basePath.resolve(getConfig().getResultFile()), mergedResult);
     }
 }
