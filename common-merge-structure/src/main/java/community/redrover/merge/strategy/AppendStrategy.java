@@ -4,7 +4,6 @@ import community.redrover.merge.model.config.AppendStrategyConfig;
 import community.redrover.merge.util.FileUtils;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class AppendStrategy extends AbstractStrategy<AppendStrategyConfig> {
 
