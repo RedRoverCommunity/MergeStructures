@@ -16,7 +16,7 @@ public class FileUtils {
             File file = getFile(path);
             String fileExtension = getFileExtension(file.getName());
             SupportedExtension extension = SupportedExtension.fromValue(fileExtension);
-            return extension.getObjectMapper().readValue(file, new TypeReference<Map<String, Object>>() {});
+            return extension.getObjectMapper().readValue(file, new TypeReference<>() {});
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to read file: " + path, e);
         }
@@ -40,9 +40,10 @@ public class FileUtils {
      * Load file to object
      * @param filePath Absolute file path and name to load
      * @param clazz Class to load to
-     * @return  return deserialized object
-     * @param <T>   Type of object to load to
-     * @throws IOException if file is not found or cannot be read
+     * @param <T> Type of object to load to
+     * @return Deserialized object
+     * @throws UncheckedIOException if file is not found or cannot be read
+     * @throws IllegalArgumentException if path is invalid or unsupported
      */
     public static <T> T loadFileToObject(Path filePath, Class<T> clazz) {
         if (clazz == null) {

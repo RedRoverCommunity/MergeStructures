@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
@@ -32,7 +31,7 @@ public class AppendStrategyTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"yaml", "json"})
-    public void testAppendStrategy_PositiveAndNegativeCases(String format) throws IOException {
+    public void testAppendStrategy_PositiveAndNegativeCases(String format) {
         Path basePath = Paths.get("src/test/resources/append", format);
         Path configPath = basePath.resolve("config." + format);
 
