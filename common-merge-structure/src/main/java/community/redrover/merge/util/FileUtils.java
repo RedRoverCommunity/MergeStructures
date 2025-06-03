@@ -13,31 +13,39 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
 
-
 public class FileUtils {
 
-    public static Map<String, Object> loadFileToMap(String filePath) throws IOException {
-        File file = getFile(filePath);
+    public static Map<String, Object> loadFileToMap(Path path) throws IOException {
+        File file = path.toFile();
 
-        String fileExtension = getFileExtension(filePath);
+        if (!file.exists()) {
+            throw new IllegalArgumentException("Nonexisting file path provided: " + path);
+        }
+
+        if (file.length() == 0) {
+            throw new UncheckedIOException("File is empty: " + path, new IOException());
+        }
+
+        String fileExtension = getFileExtension(file.getName());
+
         return switch (fileExtension.toLowerCase()) {
             case "json" -> parseJsonFile(file);
-            case "yaml", "yml" ->parseYamlFile(file);
+            case "yaml", "yml" -> parseYamlFile(file);
             default -> throw new IllegalArgumentException("Unsupported file format: " + fileExtension);
         };
     }
 
-    public static void writeMapToFile(String filePath, Map<String, Object> data) throws IOException {
-        String extension = getFileExtension(filePath).toLowerCase();
+    public static void writeMapToFile(Path filePath, Map<String, Object> data) throws IOException {
+        String extension = getFileExtension(filePath.getFileName().toString()).toLowerCase();
 
         switch (extension) {
             case "json" -> {
                 ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), data);
+                objectMapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), data);
             }
             case "yaml", "yml" -> {
                 Yaml yaml = new Yaml();
-                try (FileWriter writer = new FileWriter(filePath)) {
+                try (FileWriter writer = new FileWriter(filePath.toFile())) {
                     yaml.dump(data, writer);
                 }
             }
