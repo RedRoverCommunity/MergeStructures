@@ -19,6 +19,7 @@ public class AppendStrategyTest {
     @NoArgsConstructor
     static class AppendStrategyTestConfig extends AppendStrategyConfig {
 
+        @SuppressWarnings("FieldMayBeFinal")
         private String actualResultFile;
         private String expectedResultFile;
         private String errorTargetFile;
