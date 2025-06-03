@@ -68,7 +68,6 @@ public class FileUtilsTest {
     @Test
     void testEmptyFileThrowsIOException() throws IOException {
         Path emptyFile = createTempFileWithContent("empty_file", ".test", "");
-
         try {
             UncheckedIOException exception = assertThrows(
                     UncheckedIOException.class,
@@ -91,7 +90,6 @@ public class FileUtilsTest {
               }
             }
             """);
-
         try {
             Map<String, Object> result = FileUtils.loadFileToMap(tempJsonFile);
 
@@ -110,7 +108,6 @@ public class FileUtilsTest {
             key2:
               nestedKey: nestedValue
             """);
-
         try {
             Map<String, Object> result = FileUtils.loadFileToMap(tempYamlFile);
 
@@ -125,10 +122,10 @@ public class FileUtilsTest {
     @Test
     void testFileWithoutExtensionThrowsException() throws IOException {
         Path noExtTempFile = createTempFileWithContent("test", "", "key1: value1");
-
         try {
             IllegalArgumentException exception = assertThrows(
                     IllegalArgumentException.class, () -> FileUtils.loadFileToMap(noExtTempFile));
+
             assertTrue(exception.getMessage().contains("File does not have a valid extension"));
         } finally {
             deleteTempFile(noExtTempFile);
@@ -138,12 +135,12 @@ public class FileUtilsTest {
     @Test
     void testFileWithEndingDotThrowsException() throws IOException {
         Path endDotTempFile = createTempFileWithContent("test", ".", "key1: value1");
-
         try {
             IllegalArgumentException exception = assertThrows(
                     IllegalArgumentException.class,
                     () -> FileUtils.loadFileToMap(endDotTempFile)
             );
+
             assertTrue(exception.getMessage().contains("File does not have a valid extension"));
         } finally {
             deleteTempFile(endDotTempFile);
@@ -156,6 +153,7 @@ public class FileUtilsTest {
         try {
             IllegalArgumentException exception = assertThrows(
                     IllegalArgumentException.class, () -> FileUtils.loadFileToMap(tempTxtFile));
+
             assertTrue(exception.getMessage().contains("Unsupported extension"));
         } finally {
             deleteTempFile(tempTxtFile);
@@ -168,6 +166,7 @@ public class FileUtilsTest {
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class, () -> FileUtils.loadFileToMap(nonExistentFilePath));
+
         assertTrue(exception.getMessage().contains("Nonexisting file path provided"));
     }
 
@@ -179,9 +178,9 @@ public class FileUtilsTest {
         );
 
         Path tempJsonFile = Files.createTempFile("write_test", ".json");
-
         try {
             FileUtils.writeMapToFile(tempJsonFile, data);
+
             assertEquals(data, FileUtils.loadFileToMap(tempJsonFile));
         } finally {
             deleteTempFile(tempJsonFile);
@@ -194,10 +193,10 @@ public class FileUtilsTest {
                 "key1", "value1",
                 "key2", Map.of("nestedKey", "nestedValue")
         );
-
         Path tempYamlFile = Files.createTempFile("write_test", ".yaml");
         try {
             FileUtils.writeMapToFile(tempYamlFile, data);
+
             assertEquals(data, FileUtils.loadFileToMap(tempYamlFile));
         } finally {
             deleteTempFile(tempYamlFile);
@@ -210,6 +209,7 @@ public class FileUtilsTest {
         try {
             IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
                     FileUtils.writeMapToFile(tempTxtFile, Map.of("key", "value")));
+
             assertTrue(ex.getMessage().contains("Unsupported extension"));
         } finally {
             deleteTempFile(tempTxtFile);
@@ -224,7 +224,6 @@ public class FileUtilsTest {
           "version": 1
         }
         """);
-
         try {
             final TestConfig expectedConfig = new TestConfig("John", 1);
 
@@ -243,7 +242,6 @@ public class FileUtilsTest {
             name: "John"
             version: 1
             """);
-
         try {
             TestConfig actualConfig = FileUtils.loadFileToObject(tempYamlFile, TestConfig.class);
 

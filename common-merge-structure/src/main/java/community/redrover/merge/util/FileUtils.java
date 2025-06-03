@@ -6,17 +6,19 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class FileUtils {
 
-    public static Map<String, Object> loadFileToMap(Path path) {
+    public static LinkedHashMap<String, Object> loadFileToMap(Path path) {
         try {
             File file = getFile(path);
             String fileExtension = getFileExtension(file.getName());
             SupportedExtension extension = SupportedExtension.fromValue(fileExtension);
-            return extension.getObjectMapper().readValue(file, new TypeReference<>() {});
+
+            return extension.getObjectMapper().readValue(file, new TypeReference<LinkedHashMap<String, Object>>() {});
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to read file: " + path, e);
         }
@@ -54,6 +56,7 @@ public class FileUtils {
             File file = getFile(filePath);
             String fileExtension = getFileExtension(file.getName());
             SupportedExtension extension = SupportedExtension.fromValue(fileExtension);
+
             return extension.getObjectMapper().readValue(file, clazz);
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to parse file: " + filePath, e);
