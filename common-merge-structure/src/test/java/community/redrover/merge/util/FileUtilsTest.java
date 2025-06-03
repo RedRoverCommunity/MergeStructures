@@ -11,6 +11,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
@@ -172,10 +173,9 @@ public class FileUtilsTest {
 
     @Test
     void testWriteJsonFileFromMap() throws IOException {
-        Map<String, Object> data = Map.of(
-                "key1", "value1",
-                "key2", Map.of("nestedKey", "nestedValue")
-        );
+        LinkedHashMap<String, Object> data = new LinkedHashMap<>();
+        data.put("key1", "value1");
+        data.put("key2", Map.of("nestedKey", "nestedValue"));
 
         Path tempJsonFile = Files.createTempFile("write_test", ".json");
         try {
@@ -189,10 +189,10 @@ public class FileUtilsTest {
 
     @Test
     void testWriteYamlFileFromMap() throws IOException {
-        Map<String, Object> data = Map.of(
-                "key1", "value1",
-                "key2", Map.of("nestedKey", "nestedValue")
-        );
+        LinkedHashMap<String, Object> data = new LinkedHashMap<>();
+        data.put("key1", "value1");
+        data.put("key2", Map.of("nestedKey", "nestedValue"));
+
         Path tempYamlFile = Files.createTempFile("write_test", ".yaml");
         try {
             FileUtils.writeMapToFile(tempYamlFile, data);
@@ -207,8 +207,11 @@ public class FileUtilsTest {
     void testWriteUnsupportedFormatThrowsException() throws IOException {
         Path tempTxtFile = Files.createTempFile("write_test", ".txt");
         try {
+            LinkedHashMap<String, Object> data = new LinkedHashMap<>();
+            data.put("key", "value");
+
             IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                    FileUtils.writeMapToFile(tempTxtFile, Map.of("key", "value")));
+                    FileUtils.writeMapToFile(tempTxtFile, data));
 
             assertTrue(ex.getMessage().contains("Unsupported extension"));
         } finally {

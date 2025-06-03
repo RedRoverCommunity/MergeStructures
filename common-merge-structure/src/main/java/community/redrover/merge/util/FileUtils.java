@@ -7,7 +7,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class FileUtils {
@@ -24,7 +23,7 @@ public class FileUtils {
         }
     }
 
-    public static void writeMapToFile(Path filePath, Map<String, Object> data) {
+    public static void writeMapToFile(Path filePath, LinkedHashMap<String, Object> data) {
         File file = filePath.toFile();
         String extension = getFileExtension(filePath.getFileName().toString());
         SupportedExtension ext = SupportedExtension.fromValue(extension);

@@ -21,7 +21,7 @@ public class AppendStrategy extends AbstractStrategy<AppendStrategyConfig> {
 
     @Override
     public void execute() {
-        Map<String, Object> mergedResult = new LinkedHashMap<>(FileUtils.loadFileToMap(basePath.resolve(getConfig().getSourceFile())));
+        LinkedHashMap<String, Object> mergedResult = new LinkedHashMap<>(FileUtils.loadFileToMap(basePath.resolve(getConfig().getSourceFile())));
 
         mergedResult.putAll(FileUtils.loadFileToMap(basePath.resolve(getConfig().getTargetFile())));
 
