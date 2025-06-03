@@ -1,7 +1,5 @@
 package community.redrover.merge.strategy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import community.redrover.merge.model.config.AppendStrategyConfig;
 import community.redrover.merge.util.FileUtils;
 import lombok.Getter;
@@ -36,22 +34,9 @@ public class AppendStrategyTest {
     @ValueSource(strings = {"yaml", "json"})
     public void testAppendStrategy_PositiveAndNegativeCases(String format) throws IOException {
         Path basePath = Paths.get("src/test/resources/append", format);
+        Path configPath = basePath.resolve("config." + format);
 
-        String configFileName;
-        ObjectMapper mapper;
-
-        if ("json".equals(format)) {
-            configFileName = "config.json";
-            mapper = new ObjectMapper();
-        } else {
-            configFileName = "config.yaml";
-            mapper = new ObjectMapper(new YAMLFactory());
-        }
-
-        AppendStrategyTestConfig config = mapper.readValue(
-                basePath.resolve(configFileName).toFile(),
-                AppendStrategyTestConfig.class
-        );
+        AppendStrategyTestConfig config = FileUtils.loadFileToObject(configPath, AppendStrategyTestConfig.class);
 
         AppendStrategy strategy = new AppendStrategy(config, basePath);
         strategy.execute();
