@@ -8,7 +8,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,20 +39,14 @@ public class AppendStrategyTest {
         AppendStrategy strategy = new AppendStrategy(config, basePath);
         strategy.execute();
 
-        LinkedHashMap<String, Object> expected = FileUtils.loadFileToMap(basePath.resolve(config.getExpectedResultFile()));
-        LinkedHashMap<String, Object> actual = FileUtils.loadFileToMap(basePath.resolve(config.getActualResultFile()));
+        assertEquals(
+                FileUtils.loadFileToMap(basePath.resolve(config.getExpectedResultFile())),
+                FileUtils.loadFileToMap(basePath.resolve(config.getActualResultFile()))
+        );
 
-        assertEquals(expected, actual);
+        config.setTargetFile(config.getErrorTargetFile());
+        AppendStrategy strategyWithConflict = new AppendStrategy(config, basePath);
 
-        assertThrows(IllegalStateException.class, () -> {
-            LinkedHashMap<String, Object> sourceMap = FileUtils.loadFileToMap(basePath.resolve(config.getSourceFile()));
-            LinkedHashMap<String, Object> errorTargetMap = FileUtils.loadFileToMap(basePath.resolve(config.getErrorTargetFile()));
-
-            sourceMap.keySet().retainAll(errorTargetMap.keySet());
-
-            if (!sourceMap.isEmpty()) {
-                throw new IllegalStateException("AppendStrategy error: Matching keys found: " + sourceMap.keySet());
-            }
-        });
+        assertThrows(IllegalStateException.class, strategyWithConflict::execute);
     }
 }
