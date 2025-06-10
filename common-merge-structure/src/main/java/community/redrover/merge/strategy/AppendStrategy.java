@@ -33,8 +33,8 @@ public class AppendStrategy extends AbstractStrategy<AppendStrategyConfig> {
             throw new IllegalStateException("AppendStrategy error: Matching keys found: " + commonKeys);
         }
 
-        LinkedHashMap<String, Object> mergedResult = new LinkedHashMap<>(targetMap);
-        mergedResult.putAll(sourceMap);
+        LinkedHashMap<String, Object> mergedResult = new LinkedHashMap<>(sourceMap);
+        mergedResult.putAll(targetMap);
 
         FileUtils.writeMapToFile(basePath.resolve(getConfig().getResultFile()), mergedResult);
     }
