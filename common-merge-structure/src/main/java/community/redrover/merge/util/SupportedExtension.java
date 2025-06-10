@@ -37,7 +37,10 @@ public enum SupportedExtension {
 
     private static ObjectMapper createYamlMapper() {
         if (YAML_MAPPER == null) {
-            YAML_MAPPER = new ObjectMapper(new YAMLFactory());
+            YAMLFactory yamlFactory = new YAMLFactory();
+            yamlFactory.disable(com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+
+            YAML_MAPPER = new ObjectMapper(yamlFactory);
         }
         return YAML_MAPPER
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
