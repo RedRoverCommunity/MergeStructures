@@ -1,4 +1,6 @@
-  - strategy: extend
-    sourceFile: ./source.yaml
-    targetFile: ./target.yaml
-    resultFile: ./actualResult.yaml
+strategy: Extend
+sourceFile: ./source.yaml
+targetFile: ./target.yaml
+errorTargetFile: ./errorTarget.yaml
+expectedResultFile: ./expectedResult.yaml
+actualResultFile: ./actualResult.yaml
