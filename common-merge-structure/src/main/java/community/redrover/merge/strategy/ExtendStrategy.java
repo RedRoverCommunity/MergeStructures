@@ -38,7 +38,7 @@ public class ExtendStrategy extends AbstractStrategy<ExtendStrategyConfig> {
 
         for (String key : sourceKeys) {
             if (sourceMap.get(key) == null || targetMap.get(key) == null) {
-                throw new IllegalStateException("Null value encountered for key: " + key);
+                throw new IllegalStateException("ExtendStrategy error: Null value encountered for key: " + key);
             }
             LinkedHashMap<String, Object> mergedInner = new LinkedHashMap<>((LinkedHashMap<String, Object>) sourceMap.get(key));
             mergedInner.putAll((LinkedHashMap<String, Object>) targetMap.get(key));
