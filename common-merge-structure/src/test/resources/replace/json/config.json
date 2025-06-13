@@ -1,8 +1,8 @@
-[
-  {
-    "strategy": "replace",
-    "sourceFile": "./source.json",
-    "targetFile": "./target.json",
-    "resultFile": "./actualResult.json"
-  }
-]
+{
+  "strategy": "Replace",
+  "sourceFile": "./source.json",
+  "targetFile": "./target.json",
+  "errorTargetFile": "./errorTarget.json",
+  "expectedResultFile": "./expectedResult.json",
+  "actualResultFile": "./actualResult.json"
+}

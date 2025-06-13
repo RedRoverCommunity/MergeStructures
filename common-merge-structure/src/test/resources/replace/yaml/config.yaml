@@ -1,4 +1,6 @@
-  - strategy: replace
-    sourceFile: ./source.yaml
-    targetFile: ./target.yaml
-    resultFile: ./actualResult.yaml
+strategy: Replace
+sourceFile: ./source.yaml
+targetFile: ./target.yaml
+errorTargetFile: ./errorTarget.yaml
+expectedResultFile: ./expectedResult.yaml
+actualResultFile: ./actualResult.yaml
