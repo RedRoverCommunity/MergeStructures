@@ -1,8 +1,8 @@
-[
-  {
-    "strategy": "merge",
-    "sourceFile": "./source.json",
-    "targetFile": "./target.json",
-    "resultFile": "./actualResult.json"
-  }
-]
+{
+  "strategy": "Merge",
+  "sourceFile": "./source.json",
+  "targetFile": "./target.json",
+  "errorTargetFile": "./errorTarget.json",
+  "expectedResultFile": "./expectedResult.json",
+  "actualResultFile": "./actualResult.json"
+}
