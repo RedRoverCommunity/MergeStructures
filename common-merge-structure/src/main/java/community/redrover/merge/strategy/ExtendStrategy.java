@@ -4,7 +4,6 @@ import community.redrover.merge.model.config.ExtendStrategyConfig;
 import community.redrover.merge.util.FileUtils;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class ExtendStrategy extends AbstractStrategy<ExtendStrategyConfig> {
@@ -38,8 +37,11 @@ public class ExtendStrategy extends AbstractStrategy<ExtendStrategyConfig> {
         LinkedHashMap<String, Object> mergedResult = new LinkedHashMap<>();
 
         for (String key : sourceKeys) {
-            Map<String, Object> mergedInner = new LinkedHashMap<>((Map<String, Object>) sourceMap.get(key));
-            mergedInner.putAll((Map<String, Object>) targetMap.get(key));
+            if (sourceMap.get(key) == null || targetMap.get(key) == null) {
+                throw new IllegalStateException("ExtendStrategy error: Null value encountered for key: " + key);
+            }
+            LinkedHashMap<String, Object> mergedInner = new LinkedHashMap<>((LinkedHashMap<String, Object>) sourceMap.get(key));
+            mergedInner.putAll((LinkedHashMap<String, Object>) targetMap.get(key));
             mergedResult.put(key, mergedInner);
         }
 
