@@ -22,23 +22,23 @@ public class ReplaceStrategy extends AbstractStrategy<ReplaceStrategyConfig> {
     @SuppressWarnings("unchecked")
     public void execute() {
         LinkedHashMap<String, Object> sourceMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getSourceFile()));
-        LinkedHashMap<String, Object> targetMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getTargetFile()));
+        LinkedHashMap<String, Object> destinationMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getDestinationFile()));
 
         LinkedHashMap<String, Object> replacedResult = new LinkedHashMap<>();
 
-        for (String key : targetMap.keySet()) {
+        for (String key : destinationMap.keySet()) {
             if (!sourceMap.containsKey(key)) {
                 throw new IllegalStateException("ReplaceStrategy error: Key not found in source: " + key);
             }
 
             LinkedHashMap<String, Object> sourceValue = (LinkedHashMap<String, Object>) sourceMap.get(key);
-            LinkedHashMap<String, Object> targetValue = (LinkedHashMap<String, Object>) targetMap.get(key);
+            LinkedHashMap<String, Object> destinationValue = (LinkedHashMap<String, Object>) destinationMap.get(key);
 
-            if (!sourceValue.keySet().equals(targetValue.keySet())) {
+            if (!sourceValue.keySet().equals(destinationValue.keySet())) {
                 throw new IllegalStateException("ReplaceStrategy error: Mismatched inner keys for root key: " + key);
             }
 
-            replacedResult.put(key, targetValue);
+            replacedResult.put(key, sourceValue);
         }
 
         FileUtils.writeMapToFile(basePath.resolve(getConfig().getResultFile()), replacedResult);

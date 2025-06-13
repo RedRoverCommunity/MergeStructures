@@ -20,7 +20,7 @@ public class AppendStrategyTest {
 
         private String actualResultFile;
         private String expectedResultFile;
-        private String errorTargetFile;
+        private String errorDestinationFile;
 
         @Override
         public String getResultFile() {
@@ -44,7 +44,7 @@ public class AppendStrategyTest {
                 FileUtils.loadFileToMap(basePath.resolve(config.getActualResultFile()))
         );
 
-        config.setTargetFile(config.getErrorTargetFile());
+        config.setDestinationFile(config.getErrorDestinationFile());
         AppendStrategy strategyWithConflict = new AppendStrategy(config, basePath);
 
         assertThrows(IllegalStateException.class, strategyWithConflict::execute);

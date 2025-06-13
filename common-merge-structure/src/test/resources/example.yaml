@@ -10,11 +10,11 @@ strategy:
       error: If matching keys were found in the structures
       example:
         source: |
-          root1:
+          root2:
             key: value
 
-        target: |
-          root2:
+        destination: |
+          root1:
             key: value
 
         result: |
@@ -23,8 +23,8 @@ strategy:
           root2:
             key: value
 
-        errorTarget: |
-          root1:
+        errorDestination: |
+          root2:
             key: value
 
   - extend:
@@ -33,20 +33,20 @@ strategy:
       example:
         source: |
           root:
-            key1: value1
-
-        target: |
-          root:
             key2: value2
+
+        destination: |
+          root:
+            key1: value1
 
         result: |
           root:
             key1: value1
             key2: value2
 
-        errorTarget: |
-          root1:
-            key: value
+        errorDestination: |
+          root3:
+            key3: value3
 
   - merge:
       description: Merge 2 structures
@@ -54,24 +54,24 @@ strategy:
       example:
         source: |
           root:
-            key1: value1
-
-        target: |
-          root:
             key2: value2
-          root2:
+
+        destination: |
+          root:
+            key1: value1
+          root3:
             key3: value3
 
         result: |
           root:
             key1: value1
             key2: value2
-          root2:
+          root3:
             key3: value3
 
-        errorTarget: |
+        errorDestination: |
           root:
-            key1: value1
+            key2: value2
 
   - replace:
       description: Merge 2 structures
@@ -79,16 +79,16 @@ strategy:
       example:
         source: |
           root:
-            key: value1
-
-        target: |
-          root:
             key: value2
+
+        destination: |
+          root:
+            key: value1
 
         result: |
           root:
-            key: value1
+            key: value2
 
-        errorTarget: |
+        errorDestination: |
           root:
             key1: value1

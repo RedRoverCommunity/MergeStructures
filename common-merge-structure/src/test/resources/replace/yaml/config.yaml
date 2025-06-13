@@ -1,6 +1,6 @@
 strategy: Replace
 sourceFile: ./source.yaml
-targetFile: ./target.yaml
-errorTargetFile: ./errorTarget.yaml
+destinationFile: ./destination.yaml
+errorDestinationFile: ./errorDestination.yaml
 expectedResultFile: ./expectedResult.yaml
 actualResultFile: ./actualResult.yaml

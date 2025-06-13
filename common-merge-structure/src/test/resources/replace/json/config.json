@@ -1,8 +1,8 @@
 {
   "strategy": "Replace",
   "sourceFile": "./source.json",
-  "targetFile": "./target.json",
-  "errorTargetFile": "./errorTarget.json",
+  "destinationFile": "./destination.json",
+  "errorDestinationFile": "./errorDestination.json",
   "expectedResultFile": "./expectedResult.json",
   "actualResultFile": "./actualResult.json"
 }

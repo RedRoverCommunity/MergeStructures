@@ -14,6 +14,6 @@ public abstract class AbstractStrategyConfig {
 
     private Strategy strategy;
     private String sourceFile;
-    private String targetFile;
+    private String destinationFile;
     private String resultFile;
 }

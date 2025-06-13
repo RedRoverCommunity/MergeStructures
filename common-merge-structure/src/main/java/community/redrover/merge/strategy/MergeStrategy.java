@@ -22,28 +22,28 @@ public class MergeStrategy extends AbstractStrategy<MergeStrategyConfig> {
     @SuppressWarnings("unchecked")
     public void execute() {
         LinkedHashMap<String, Object> sourceMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getSourceFile()));
-        LinkedHashMap<String, Object> targetMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getTargetFile()));
+        LinkedHashMap<String, Object> destinationMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getDestinationFile()));
 
         LinkedHashMap<String, Object> mergedResult = new LinkedHashMap<>();
 
-        for (String key : targetMap.keySet()) {
+        for (String key : destinationMap.keySet()) {
 
             Object sourceValue = sourceMap.get(key);
-            Object targetValue = targetMap.get(key);
+            Object destinationValue = destinationMap.get(key);
 
-            if (targetValue == null) {
+            if (destinationValue == null) {
                 throw new IllegalStateException("MergeStrategy error: Null value encountered for key: " + key);
             }
             if (sourceValue == null) {
-                mergedResult.put(key, targetValue);
+                mergedResult.put(key, destinationValue);
                 continue;
             }
-            if (sourceValue.equals(targetValue)) {
+            if (sourceValue.equals(destinationValue)) {
                 throw new IllegalStateException("MergeStrategy error: Duplicate root key with same content: " + key);
             }
 
-            LinkedHashMap<String, Object> mergedInner = new LinkedHashMap<>((LinkedHashMap<String, Object>) sourceValue);
-            mergedInner.putAll((LinkedHashMap<String, Object>) targetValue);
+            LinkedHashMap<String, Object> mergedInner = new LinkedHashMap<>((LinkedHashMap<String, Object>) destinationValue);
+            mergedInner.putAll((LinkedHashMap<String, Object>) sourceValue);
             mergedResult.put(key, mergedInner);
         }
 

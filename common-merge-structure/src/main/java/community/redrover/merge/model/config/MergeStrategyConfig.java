@@ -10,7 +10,7 @@ public class MergeStrategyConfig extends AbstractStrategyConfig {
     }
 
     @SuppressWarnings("unused")
-    public MergeStrategyConfig(Strategy strategy, String sourceFile, String targetFile, String resultFile) {
-        super(strategy, sourceFile, targetFile, resultFile);
+    public MergeStrategyConfig(Strategy strategy, String sourceFile, String destinationFile, String resultFile) {
+        super(strategy, sourceFile, destinationFile, resultFile);
     }
 }
