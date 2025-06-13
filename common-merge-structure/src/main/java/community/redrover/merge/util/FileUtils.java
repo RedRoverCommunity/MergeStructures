@@ -62,19 +62,25 @@ public class FileUtils {
         }
     }
 
-    private static File getFile(Path path) throws IOException {
+    private static File getFile(Path path) {
         Objects.requireNonNull(path, "Path cannot be null");
 
         if (!Files.exists(path)) {
             throw new IllegalArgumentException("Nonexisting file path provided: " + path);
         } else if (!Files.isReadable(path)) {
-            throw new UncheckedIOException(new IOException("File is not readable: " + path));
+            throw new IllegalStateException("File is not readable: " + path);
         } else if (!Files.isRegularFile(path)) {
-            throw new UncheckedIOException(new IOException("File is not a regular file: " + path));
+            throw new IllegalStateException("File is not a regular file: " + path);
         } else if (Files.isDirectory(path)) {
-            throw new UncheckedIOException(new IOException("File is a directory: " + path));
-        } else if (Files.size(path) == 0) {
-            throw new UncheckedIOException(new IOException("File is empty: " + path));
+            throw new IllegalStateException("File is a directory: " + path);
+        }
+
+        try {
+            if (Files.size(path) == 0) {
+                throw new IllegalStateException("File is empty: " + path);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException("I/O error while checking file size: " + path, e);
         }
 
         return path.toFile();
