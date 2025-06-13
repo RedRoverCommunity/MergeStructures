@@ -10,7 +10,7 @@ public class ReplaceStrategyConfig extends AbstractStrategyConfig {
     }
 
     @SuppressWarnings("unused")
-    public ReplaceStrategyConfig(Strategy strategy, String sourceFile, String targetFile, String resultFile) {
-        super(strategy, sourceFile, targetFile, resultFile);
+    public ReplaceStrategyConfig(Strategy strategy, String sourceFile, String destinationFile, String resultFile) {
+        super(strategy, sourceFile, destinationFile, resultFile);
     }
 }

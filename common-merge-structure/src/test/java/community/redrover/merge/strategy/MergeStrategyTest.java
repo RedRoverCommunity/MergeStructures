@@ -20,7 +20,7 @@ public class MergeStrategyTest {
 
         private String actualResultFile;
         private String expectedResultFile;
-        private String errorTargetFile;
+        private String errorDestinationFile;
 
         @Override
         public String getResultFile() {
@@ -43,7 +43,7 @@ public class MergeStrategyTest {
                 FileUtils.loadFileToMap(basePath.resolve(config.getActualResultFile()))
         );
 
-        config.setTargetFile(config.getErrorTargetFile());
+        config.setDestinationFile(config.getErrorDestinationFile());
         MergeStrategy strategyWithConflict = new MergeStrategy(config, basePath);
 
         assertThrows(IllegalStateException.class, strategyWithConflict::execute);

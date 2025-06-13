@@ -19,7 +19,7 @@ public class ReplaceStrategyTest {
     static class ReplaceStrategyTestConfig extends ReplaceStrategyConfig {
         private String actualResultFile;
         private String expectedResultFile;
-        private String errorTargetFile;
+        private String errorDestinationFile;
 
         @Override
         public String getResultFile() {
@@ -43,7 +43,7 @@ public class ReplaceStrategyTest {
                 FileUtils.loadFileToMap(basePath.resolve(config.getActualResultFile()))
         );
 
-        config.setTargetFile(config.getErrorTargetFile());
+        config.setDestinationFile(config.getErrorDestinationFile());
         ReplaceStrategy strategyWithConflict = new ReplaceStrategy(config, basePath);
 
         assertThrows(IllegalStateException.class, strategyWithConflict::execute);

@@ -10,7 +10,7 @@ public class ExtendStrategyConfig extends AbstractStrategyConfig {
     }
 
     @SuppressWarnings("unused")
-    public ExtendStrategyConfig(Strategy strategy, String sourceFile, String targetFile, String resultFile) {
-        super(strategy, sourceFile, targetFile, resultFile);
+    public ExtendStrategyConfig(Strategy strategy, String sourceFile, String destinationFile, String resultFile) {
+        super(strategy, sourceFile, destinationFile, resultFile);
     }
 }

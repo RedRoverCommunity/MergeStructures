@@ -23,18 +23,18 @@ public class AppendStrategy extends AbstractStrategy<AppendStrategyConfig> {
     @Override
     public void execute() {
         LinkedHashMap<String, Object> sourceMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getSourceFile()));
-        LinkedHashMap<String, Object> targetMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getTargetFile()));
+        LinkedHashMap<String, Object> destinationMap = FileUtils.loadFileToMap(basePath.resolve(getConfig().getDestinationFile()));
 
         Set<String> commonKeys = sourceMap.keySet().stream()
-                .filter(targetMap::containsKey)
+                .filter(destinationMap::containsKey)
                 .collect(Collectors.toSet());
 
         if (!commonKeys.isEmpty()) {
             throw new IllegalStateException("AppendStrategy error: Matching keys found: " + commonKeys);
         }
 
-        LinkedHashMap<String, Object> mergedResult = new LinkedHashMap<>(sourceMap);
-        mergedResult.putAll(targetMap);
+        LinkedHashMap<String, Object> mergedResult = new LinkedHashMap<>(destinationMap);
+        mergedResult.putAll(sourceMap);
 
         FileUtils.writeMapToFile(basePath.resolve(getConfig().getResultFile()), mergedResult);
     }
