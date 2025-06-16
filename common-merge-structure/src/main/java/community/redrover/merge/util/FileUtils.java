@@ -17,7 +17,7 @@ public class FileUtils {
             String fileExtension = getFileExtension(file.getName());
             SupportedExtension extension = SupportedExtension.fromValue(fileExtension);
 
-            return extension.getObjectMapper().readValue(file, new TypeReference<LinkedHashMap<String, Object>>() {});
+            return extension.getObjectMapper().readValue(file, new TypeReference<>() {});
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to read file: " + path, e);
         }
