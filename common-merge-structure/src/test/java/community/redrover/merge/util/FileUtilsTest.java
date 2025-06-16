@@ -50,32 +50,45 @@ public class FileUtilsTest {
     private static class TempFile implements AutoCloseable {
         private final Path path;
 
-        TempFile(String prefix, String suffix) throws IOException {
-            this.path = Files.createTempFile(prefix, suffix);
+        TempFile(String prefix, String suffix) {
+            try {
+                this.path = Files.createTempFile(prefix, suffix);
+            } catch (IOException e) {
+                throw new UncheckedIOException("Failed to create temp file with prefix '%s' and suffix '%s'".formatted(prefix, suffix), e);
+            }
+        }
+
+        public void write(String content) {
+            try {
+                Files.writeString(path, content);
+            } catch (IOException e) {
+                throw new UncheckedIOException("Failed to write to temp file: " + path, e);
+            }
         }
 
         @Override
-        public void close() throws IOException {
-            Files.deleteIfExists(path);
+        public void close() {
+            try {
+                Files.deleteIfExists(path);
+            } catch (IOException e) {
+                throw new UncheckedIOException("Failed to delete existing temp file: " + path, e);
+            }
         }
     }
 
     @Test
     void testEmptyFileThrowsException() {
         try (TempFile emptyFile = new TempFile("empty_file", ".test")) {
-            Files.writeString(emptyFile.getPath(), "");
-            var exception = assertThrows(UncheckedIOException.class,
-                    () -> FileUtils.loadFileToMap(emptyFile.getPath()));
-            assertTrue(exception.getMessage().contains("File is empty"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            emptyFile.write("");
+            assertTrue(assertThrows(UncheckedIOException.class,
+                    () -> FileUtils.loadFileToMap(emptyFile.getPath())).getMessage().contains("File is empty"));
         }
     }
 
     @Test
     void testValidJsonFileReturnsExpectedMap() {
         try (TempFile tempJsonFile = new TempFile("test", ".json")) {
-            Files.writeString(tempJsonFile.getPath(), """
+            tempJsonFile.write("""
                     {
                       "key1": "value1",
                       "key2": {
@@ -86,15 +99,13 @@ public class FileUtilsTest {
             var result = FileUtils.loadFileToMap(tempJsonFile.getPath());
             assertEquals("value1", result.get("key1"));
             assertEquals("nestedValue", ((Map<?, ?>) result.get("key2")).get("nestedKey"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
     @Test
     void testValidYamlFileReturnsExpectedMap() {
         try (TempFile tempYamlFile = new TempFile("test", ".yaml")) {
-            Files.writeString(tempYamlFile.getPath(), """
+            tempYamlFile.write("""
                     key1: value1
                     key2:
                       nestedKey: nestedValue
@@ -102,53 +113,41 @@ public class FileUtilsTest {
             var result = FileUtils.loadFileToMap(tempYamlFile.getPath());
             assertEquals("value1", result.get("key1"));
             assertEquals("nestedValue", ((Map<?, ?>) result.get("key2")).get("nestedKey"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
     @Test
     void testFileWithoutExtensionThrowsException() {
         try (TempFile noExtFile = new TempFile("test", "")) {
-            Files.writeString(noExtFile.getPath(), "key1: value1");
-            var exception = assertThrows(IllegalArgumentException.class,
-                    () -> FileUtils.loadFileToMap(noExtFile.getPath()));
-            assertTrue(exception.getMessage().contains("File does not have a valid extension"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            noExtFile.write("key1: value1");
+            assertTrue(assertThrows(IllegalArgumentException.class,
+                    () -> FileUtils.loadFileToMap(noExtFile.getPath())).getMessage().contains("File does not have a valid extension"));
         }
     }
 
     @Test
     void testFileWithEndingDotThrowsException() {
         try (TempFile endDotFile = new TempFile("test", ".")) {
-            Files.writeString(endDotFile.getPath(), "key1: value1");
-            var exception = assertThrows(IllegalArgumentException.class,
-                    () -> FileUtils.loadFileToMap(endDotFile.getPath()));
-            assertTrue(exception.getMessage().contains("File does not have a valid extension"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            endDotFile.write("key1: value1");
+            assertTrue(assertThrows(IllegalArgumentException.class,
+                    () -> FileUtils.loadFileToMap(endDotFile.getPath())).getMessage().contains("File does not have a valid extension"));
         }
     }
 
     @Test
     void testUnsupportedFileFormatThrowsException() {
         try (TempFile txtFile = new TempFile("test", ".txt")) {
-            Files.writeString(txtFile.getPath(), "key1: value1");
-            var exception = assertThrows(IllegalArgumentException.class,
-                    () -> FileUtils.loadFileToMap(txtFile.getPath()));
-            assertTrue(exception.getMessage().contains("Unsupported extension"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            txtFile.write("key1: value1");
+            assertTrue(assertThrows(IllegalArgumentException.class,
+                    () -> FileUtils.loadFileToMap(txtFile.getPath())).getMessage().contains("Unsupported extension"));
         }
     }
 
     @Test
     void testNonExistentFileThrowsException() {
         Path nonExistent = Path.of("/path/to/nonexistent/file.json");
-        var exception = assertThrows(IllegalArgumentException.class,
-                () -> FileUtils.loadFileToMap(nonExistent));
-        assertTrue(exception.getMessage().contains("Nonexisting file path provided"));
+        assertTrue(assertThrows(IllegalArgumentException.class,
+                () -> FileUtils.loadFileToMap(nonExistent)).getMessage().contains("Nonexistent file path provided"));
     }
 
     @Test
@@ -160,8 +159,6 @@ public class FileUtilsTest {
         try (TempFile tempJsonFile = new TempFile("write_test", ".json")) {
             FileUtils.writeMapToFile(tempJsonFile.getPath(), data);
             assertEquals(data, FileUtils.loadFileToMap(tempJsonFile.getPath()));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
@@ -174,8 +171,6 @@ public class FileUtilsTest {
         try (TempFile tempYamlFile = new TempFile("write_test", ".yaml")) {
             FileUtils.writeMapToFile(tempYamlFile.getPath(), data);
             assertEquals(data, FileUtils.loadFileToMap(tempYamlFile.getPath()));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
@@ -185,44 +180,36 @@ public class FileUtilsTest {
             var data = new LinkedHashMap<String, Object>();
             data.put("key", "value");
 
-            var exception = assertThrows(IllegalArgumentException.class,
-                    () -> FileUtils.writeMapToFile(tempTxtFile.getPath(), data));
-            assertTrue(exception.getMessage().contains("Unsupported extension"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            assertTrue(assertThrows(IllegalArgumentException.class,
+                    () -> FileUtils.writeMapToFile(tempTxtFile.getPath(), data)).getMessage().contains("Unsupported extension"));
         }
     }
 
     @Test
     void testLoadJsonFileToObject() {
         try (TempFile tempJsonFile = new TempFile("test", ".json")) {
-            Files.writeString(tempJsonFile.getPath(), """
+            tempJsonFile.write("""
                     {
                       "name": "John",
                       "version": 1
                     }
                     """);
-            var expected = new TestConfig("John", 1);
             var actual = FileUtils.loadFileToObject(tempJsonFile.getPath(), TestConfig.class);
             assertNotNull(actual);
-            assertEquals(expected, actual);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            assertEquals(new TestConfig("John", 1), actual);
         }
     }
 
     @Test
     void testLoadYamlFileToObject() {
         try (TempFile tempYamlFile = new TempFile("test", ".yaml")) {
-            Files.writeString(tempYamlFile.getPath(), """
+            tempYamlFile.write("""
                     name: "John"
                     version: 1
                     """);
             var actual = FileUtils.loadFileToObject(tempYamlFile.getPath(), TestConfig.class);
             assertNotNull(actual);
             assertEquals(new TestConfig("John", 1), actual);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
@@ -233,22 +220,18 @@ public class FileUtilsTest {
         assertThrows(IllegalArgumentException.class,
                 () -> FileUtils.loadFileToObject(Path.of("Wrong_name"), TestConfig.class));
 
-        try {
-            try (TempFile wrongExtFile = new TempFile("wrong", ".ext")) {
-                Files.writeString(wrongExtFile.getPath(), "dummy values");
-                assertThrows(IllegalArgumentException.class,
-                        () -> FileUtils.loadFileToObject(wrongExtFile.getPath(), TestConfig.class));
-            }
+        try (TempFile wrongExtFile = new TempFile("wrong", ".ext")) {
+            wrongExtFile.write("dummy values");
+            assertThrows(IllegalArgumentException.class,
+                    () -> FileUtils.loadFileToObject(wrongExtFile.getPath(), TestConfig.class));
+        }
 
-            for (String ext : new String[]{".json", ".yaml", ".yml"}) {
-                try (TempFile emptyFile = new TempFile("empty_file", ext)) {
-                    Files.writeString(emptyFile.getPath(), "");
-                    assertThrows(UncheckedIOException.class,
-                            () -> FileUtils.loadFileToObject(emptyFile.getPath(), TestConfig.class));
-                }
+        for (String ext : new String[]{".json", ".yaml", ".yml"}) {
+            try (TempFile emptyFile = new TempFile("empty_file", ext)) {
+                emptyFile.write("");
+                assertThrows(UncheckedIOException.class,
+                        () -> FileUtils.loadFileToObject(emptyFile.getPath(), TestConfig.class));
             }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 }

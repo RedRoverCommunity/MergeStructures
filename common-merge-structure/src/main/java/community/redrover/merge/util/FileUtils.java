@@ -66,7 +66,7 @@ public class FileUtils {
         Objects.requireNonNull(path, "Path cannot be null");
 
         if (!Files.exists(path)) {
-            throw new IllegalArgumentException("Nonexisting file path provided: " + path);
+            throw new IllegalArgumentException("Nonexistent file path provided: " + path);
         }
         if (!Files.isReadable(path)) {
             throw new UncheckedIOException(new IOException("File is not readable: " + path));
