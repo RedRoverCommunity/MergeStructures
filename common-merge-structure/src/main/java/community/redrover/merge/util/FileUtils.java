@@ -17,7 +17,7 @@ public class FileUtils {
             String fileExtension = getFileExtension(file.getName());
             SupportedExtension extension = SupportedExtension.fromValue(fileExtension);
 
-            return extension.getObjectMapper().readValue(file, new TypeReference<LinkedHashMap<String, Object>>() {});
+            return extension.getObjectMapper().readValue(file, new TypeReference<>() {});
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to read file: " + path, e);
         }
@@ -62,19 +62,25 @@ public class FileUtils {
         }
     }
 
-    private static File getFile(Path path) throws IOException {
+    private static File getFile(Path path) {
         Objects.requireNonNull(path, "Path cannot be null");
 
         if (!Files.exists(path)) {
-            throw new IllegalArgumentException("Nonexisting file path provided: " + path);
-        } else if (!Files.isReadable(path)) {
+            throw new IllegalArgumentException("Nonexistent file path provided: " + path);
+        }
+        if (!Files.isReadable(path)) {
             throw new UncheckedIOException(new IOException("File is not readable: " + path));
-        } else if (!Files.isRegularFile(path)) {
+        }
+        if (!Files.isRegularFile(path)) {
             throw new UncheckedIOException(new IOException("File is not a regular file: " + path));
-        } else if (Files.isDirectory(path)) {
-            throw new UncheckedIOException(new IOException("File is a directory: " + path));
-        } else if (Files.size(path) == 0) {
-            throw new UncheckedIOException(new IOException("File is empty: " + path));
+        }
+
+        try {
+            if (Files.size(path) == 0) {
+                throw new UncheckedIOException(new IOException("File is empty: " + path));
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException("I/O error while checking file size: " + path, e);
         }
 
         return path.toFile();
