@@ -67,17 +67,17 @@ public class FileUtils {
 
         if (!Files.exists(path)) {
             throw new IllegalArgumentException("Nonexisting file path provided: " + path);
-        } else if (!Files.isReadable(path)) {
-            throw new IllegalStateException("File is not readable: " + path);
-        } else if (!Files.isRegularFile(path)) {
-            throw new IllegalStateException("File is not a regular file: " + path);
-        } else if (Files.isDirectory(path)) {
-            throw new IllegalStateException("File is a directory: " + path);
+        }
+        if (!Files.isReadable(path)) {
+            throw new UncheckedIOException(new IOException("File is not readable: " + path));
+        }
+        if (!Files.isRegularFile(path)) {
+            throw new UncheckedIOException(new IOException("File is not a regular file: " + path));
         }
 
         try {
             if (Files.size(path) == 0) {
-                throw new IllegalStateException("File is empty: " + path);
+                throw new UncheckedIOException(new IOException("File is empty: " + path));
             }
         } catch (IOException e) {
             throw new UncheckedIOException("I/O error while checking file size: " + path, e);
