@@ -38,8 +38,8 @@ public class Main {
         AppendStrategyConfig config;
 
         if (argMap.containsKey("--config")) {
-            String configPath = argMap.get("--config");
-            if (configPath == null || configPath.startsWith("--")) {
+            String configPath = Objects.requireNonNull(argMap.get("--config"), "--config must not be null");
+            if (configPath.startsWith("--")) {
                 System.err.println("Invalid value for --config");
                 printUsageAndExit();
             }
