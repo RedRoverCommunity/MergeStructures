@@ -32,13 +32,13 @@ public class CliUtils {
     }
 
     public static <T> T loadConfigOrUseArgs(
-            ParsedStrategy parsed,
+            ParsedStrategy parsedArgs,
             Class<T> configClass,
             List<String> requiredArgs,
             Supplier<T> fallbackConfigSupplier
     ) {
-        StrategyArgs args = parsed.args();
-        JCommander jc = parsed.commander();
+        StrategyArgs args = parsedArgs.args();
+        JCommander jc = parsedArgs.commander();
 
         if (args.config != null) {
             if (isInvalidPath(args.config)) {
@@ -75,8 +75,8 @@ public class CliUtils {
 
                 Supported strategies: append, merge, replace, extend
                 Supported formats: JSON (.json), YAML (.yaml or .yml)
-
-                Use '--help' to see this message again.
+                
+                Use '--help' to display help message.
                 """);
         System.exit(1);
     }
