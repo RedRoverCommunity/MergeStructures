@@ -48,8 +48,6 @@ public enum SupportedExtension {
         return Arrays.stream(values())
                 .filter(ext -> ext.value.equalsIgnoreCase(value))
                 .findFirst()
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Unsupported extension: " + value)
-                );
+                .orElseThrow(() -> new IllegalArgumentException("Unsupported extension: " + value));
     }
 }
