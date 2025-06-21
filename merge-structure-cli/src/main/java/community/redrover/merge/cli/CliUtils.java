@@ -41,6 +41,7 @@ public class CliUtils {
             if (isInvalidPath(args.config)) {
                 throw new CliException("Invalid value for --config: " + args.config, jc);
             }
+
             return FileUtils.loadFileToObject(Paths.get(args.config), configClass);
         }
 
