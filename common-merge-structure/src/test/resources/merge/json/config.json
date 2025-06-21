@@ -1,5 +1,5 @@
 {
-  "strategy": "Merge",
+  "strategy": "merge",
   "sourceFile": "./source.json",
   "destinationFile": "./destination.json",
   "errorDestinationFile": "./errorDestination.json",

@@ -1,4 +1,4 @@
-strategy: Extend
+strategy: extend
 sourceFile: ./source.yaml
 destinationFile: ./destination.yaml
 errorDestinationFile: ./errorDestination.yaml

@@ -1,5 +1,5 @@
 {
-  "strategy": "Append",
+  "strategy": "extend",
   "sourceFile": "./source.json",
   "destinationFile": "./destination.json",
   "errorDestinationFile": "./errorDestination.json",

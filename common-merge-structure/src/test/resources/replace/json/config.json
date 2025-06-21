@@ -1,5 +1,5 @@
 {
-  "strategy": "Replace",
+  "strategy": "replace",
   "sourceFile": "./source.json",
   "destinationFile": "./destination.json",
   "errorDestinationFile": "./errorDestination.json",

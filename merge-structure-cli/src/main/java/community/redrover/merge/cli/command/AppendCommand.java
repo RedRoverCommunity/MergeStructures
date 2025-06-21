@@ -19,7 +19,7 @@ public class AppendCommand {
                 AppendStrategyConfig.class,
                 List.of(strategyArgs.source, strategyArgs.destination, strategyArgs.result),
                 () -> new AppendStrategyConfig(
-                        Strategy.Append,
+                        Strategy.APPEND,
                         strategyArgs.source,
                         strategyArgs.destination,
                         strategyArgs.result

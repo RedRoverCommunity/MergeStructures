@@ -19,13 +19,10 @@ public class CliUtils {
         try {
             jc.parse(args);
             if (strategyArgs.help) {
-                jc.usage();
-                System.exit(0);
+                throw new CliException(null, jc);
             }
         } catch (ParameterException e) {
-            System.err.println("Error: " + e.getMessage());
-            jc.usage();
-            System.exit(1);
+            throw new CliException("Error: " + e.getMessage(), jc);
         }
 
         return new ParsedStrategy(strategyArgs, jc);
@@ -42,18 +39,13 @@ public class CliUtils {
 
         if (args.config != null) {
             if (isInvalidPath(args.config)) {
-                System.err.println("Invalid value for --config: " + args.config);
-                jc.usage();
-                System.exit(1);
+                throw new CliException("Invalid value for --config: " + args.config, jc);
             }
-
             return FileUtils.loadFileToObject(Paths.get(args.config), configClass);
         }
 
         if (requiredArgs.stream().anyMatch(CliUtils::isInvalidPath)) {
-            System.err.println("Missing or invalid required arguments.");
-            jc.usage();
-            System.exit(1);
+            throw new CliException("Missing or invalid required arguments.", jc);
         }
 
         return fallbackConfigSupplier.get();
@@ -63,21 +55,20 @@ public class CliUtils {
         return path == null || path.isBlank() || path.startsWith("--");
     }
 
-    public static void printUsageAndExit() {
+    public static void printUsage() {
         System.out.println("""
-                Usage:
-                  java -jar merge-structure-cli.jar <strategy> [options]
+            Usage:
+              java -jar merge-structure-cli.jar <strategy> [options]
 
-                Example:
-                  java -jar merge-structure-cli.jar append --config config.yaml
-                  OR
-                  java -jar merge-structure-cli.jar append --source source.yaml --destination dest.yaml --result output.yaml
+            Example:
+              java -jar merge-structure-cli.jar append --config config.yaml
+              OR
+              java -jar merge-structure-cli.jar append --source source.yaml --destination dest.yaml --result output.yaml
 
-                Supported strategies: append, merge, replace, extend
-                Supported formats: JSON (.json), YAML (.yaml or .yml)
-                
-                Use '--help' to display help message.
-                """);
-        System.exit(1);
+            Supported strategies: append, merge, replace, extend
+            Supported formats: JSON (.json), YAML (.yaml or .yml)
+
+            Use '--help' to display help message.
+            """);
     }
 }
