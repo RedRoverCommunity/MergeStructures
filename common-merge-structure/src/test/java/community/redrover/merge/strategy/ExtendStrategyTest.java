@@ -29,7 +29,7 @@ public class ExtendStrategyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"yaml", "json"})
+    @ValueSource(strings = {"json", "yaml"})
     void testExtendStrategyPositiveAndNegativeCases(String format) {
         Path basePath = Paths.get("src/test/resources/extend", format);
         Path configPath = basePath.resolve("config." + format);

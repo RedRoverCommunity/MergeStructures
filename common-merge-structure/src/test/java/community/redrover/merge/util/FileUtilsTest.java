@@ -1,80 +1,16 @@
 package community.redrover.merge.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import community.redrover.merge.testutils.TestConfig;
 import org.junit.jupiter.api.Test;
-import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
+import community.redrover.merge.testutils.TempFile;
 
 public class FileUtilsTest {
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    private static class TestConfig {
-        public String name;
-        public int version;
-
-        @Override
-        public String toString() {
-            return "TestConfig{name='" + name + "', version=" + version + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-
-            TestConfig that = (TestConfig) o;
-            return version == that.version && Objects.equals(name, that.name);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = name.hashCode();
-            result = 31 * result + version;
-            return result;
-        }
-    }
-
-    @Getter
-    private static class TempFile implements AutoCloseable {
-        private final Path path;
-
-        TempFile(String prefix, String suffix) {
-            try {
-                this.path = Files.createTempFile(prefix, suffix);
-            } catch (IOException e) {
-                throw new UncheckedIOException("Failed to create temp file with prefix '%s' and suffix '%s'".formatted(prefix, suffix), e);
-            }
-        }
-
-        public void write(String content) {
-            try {
-                Files.writeString(path, content);
-            } catch (IOException e) {
-                throw new UncheckedIOException("Failed to write to temp file: " + path, e);
-            }
-        }
-
-        @Override
-        public void close() {
-            try {
-                Files.deleteIfExists(path);
-            } catch (IOException e) {
-                throw new UncheckedIOException("Failed to delete existing temp file: " + path, e);
-            }
-        }
-    }
 
     @Test
     void testEmptyFileThrowsException() {

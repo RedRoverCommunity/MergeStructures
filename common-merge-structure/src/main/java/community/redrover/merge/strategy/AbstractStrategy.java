@@ -7,7 +7,7 @@ import lombok.Getter;
 public abstract class AbstractStrategy<Config extends AbstractStrategyConfig> {
 
     @Getter(AccessLevel.PROTECTED)
-    private Config config;
+    private final Config config;
 
     public AbstractStrategy(Config config) {
         this.config = config;

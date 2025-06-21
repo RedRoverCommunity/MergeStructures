@@ -1,4 +1,4 @@
-strategy: Merge
+strategy: merge
 sourceFile: ./source.yaml
 destinationFile: ./destination.yaml
 errorDestinationFile: ./errorDestination.yaml

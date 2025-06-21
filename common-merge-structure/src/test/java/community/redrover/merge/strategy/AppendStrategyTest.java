@@ -29,7 +29,7 @@ public class AppendStrategyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"yaml", "json"})
+    @ValueSource(strings = {"json", "yaml"})
     void testAppendStrategyPositiveAndNegativeCases(String format) {
         Path basePath = Paths.get("src/test/resources/append", format);
         Path configPath = basePath.resolve("config." + format);

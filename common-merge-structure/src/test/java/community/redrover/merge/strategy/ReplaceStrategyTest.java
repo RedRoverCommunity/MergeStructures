@@ -28,7 +28,7 @@ public class ReplaceStrategyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"yaml", "json"})
+    @ValueSource(strings = {"json", "yaml"})
     void testReplaceStrategyPositiveAndNegativeCases(String format) {
         Path basePath = Paths.get("src/test/resources/replace", format);
         Path configPath = basePath.resolve("config." + format);

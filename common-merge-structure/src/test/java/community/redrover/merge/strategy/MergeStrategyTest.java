@@ -29,7 +29,7 @@ public class MergeStrategyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"yaml", "json"})
+    @ValueSource(strings = {"json", "yaml"})
     void testMergeStrategyPositiveAndNegativeCases(String format) {
         Path basePath = Paths.get("src/test/resources/merge", format);
         Path configPath = basePath.resolve("config." + format);

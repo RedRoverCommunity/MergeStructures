@@ -5,28 +5,28 @@ import community.redrover.merge.strategy.*;
 
 public enum Strategy {
 
-    Append() {
+    APPEND() {
         @Override
         public AbstractStrategy<AppendStrategyConfig> createStrategy(AbstractStrategyConfig strategyConfig) {
             return new AppendStrategy((AppendStrategyConfig) strategyConfig);
         }
     },
 
-    Extend() {
+    EXTEND() {
         @Override
         public AbstractStrategy<ExtendStrategyConfig> createStrategy(AbstractStrategyConfig strategyConfig) {
             return new ExtendStrategy((ExtendStrategyConfig) strategyConfig);
         }
     },
 
-    Merge() {
+    MERGE() {
         @Override
         protected AbstractStrategy<MergeStrategyConfig> createStrategy(AbstractStrategyConfig strategyConfig) {
             return new MergeStrategy((MergeStrategyConfig) strategyConfig);
         }
     },
 
-    Replace() {
+    REPLACE() {
         @Override
         protected AbstractStrategy<ReplaceStrategyConfig> createStrategy(AbstractStrategyConfig strategyConfig) {
             return new ReplaceStrategy((ReplaceStrategyConfig) strategyConfig);
