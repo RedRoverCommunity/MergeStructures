@@ -1,49 +1,16 @@
 package community.redrover.merge.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import community.redrover.merge.testutils.TestConfig;
 import org.junit.jupiter.api.Test;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
 import community.redrover.merge.testutils.TempFile;
 
 public class FileUtilsTest {
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    private static class TestConfig {
-        public String name;
-        public int version;
-
-        @Override
-        public String toString() {
-            return "TestConfig{name='" + name + "', version=" + version + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-
-            TestConfig that = (TestConfig) o;
-            return version == that.version && Objects.equals(name, that.name);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = name.hashCode();
-            result = 31 * result + version;
-            return result;
-        }
-    }
 
     @Test
     void testEmptyFileThrowsException() {
