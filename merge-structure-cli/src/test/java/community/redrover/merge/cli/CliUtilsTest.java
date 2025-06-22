@@ -84,7 +84,7 @@ public class CliUtilsTest {
 
     @ParameterizedTest
     @EnumSource(SupportedExtension.class)
-    void testLoadConfigOrUseArgsWithConfig(SupportedExtension ext) throws Exception {
+    void testLoadConfigOrUseArgsWithConfig(SupportedExtension ext) {
         String format = ext.getValue();
         try (TempFile configFile = new TempFile("config", "." + format)) {
             switch (ext) {
