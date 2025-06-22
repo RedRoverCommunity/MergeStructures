@@ -89,19 +89,22 @@ public class CliUtilsTest {
         try (TempFile configFile = new TempFile("config", "." + format)) {
             if (ext == SupportedExtension.JSON) {
                 configFile.write(String.format(
-                        "{\n" +
-                                "  \"strategy\": \"append\",\n" +
-                                "  \"sourceFile\": \"src.%1$s\",\n" +
-                                "  \"destinationFile\": \"dest.%1$s\",\n" +
-                                "  \"resultFile\": \"out.%1$s\"\n" +
-                                "}", format
+                        """
+                                {
+                                  "strategy": "append",
+                                  "sourceFile": "src.%1$s",
+                                  "destinationFile": "dest.%1$s",
+                                  "resultFile": "out.%1$s"
+                                }""", format
                 ));
             } else {
                 configFile.write(String.format(
-                        "strategy: append\n" +
-                                "sourceFile: src.%1$s\n" +
-                                "destinationFile: dest.%1$s\n" +
-                                "resultFile: out.%1$s\n", format
+                        """
+                                strategy: append
+                                sourceFile: src.%1$s
+                                destinationFile: dest.%1$s
+                                resultFile: out.%1$s
+                                """, format
                 ));
             }
 
