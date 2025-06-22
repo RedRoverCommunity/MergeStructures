@@ -8,7 +8,9 @@ import community.redrover.merge.model.config.AppendStrategyConfig;
 import community.redrover.merge.strategy.AppendStrategy;
 import java.util.List;
 
-public class AppendCommand {
+public final class AppendCommand {
+
+    private AppendCommand() {}
 
     public static void run(String[] args) {
         ParsedStrategy parsedArgs = CliUtils.parseArgs("append", args);
