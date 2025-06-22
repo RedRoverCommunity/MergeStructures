@@ -1,0 +1,6 @@
+strategy: extend
+sourceFile: ./source.yml
+destinationFile: ./destination.yml
+errorDestinationFile: ./errorDestination.yml
+expectedResultFile: ./expectedResult.yml
+actualResultFile: ./actualResult.yml
