@@ -2,10 +2,11 @@ package community.redrover.merge.strategy;
 
 import community.redrover.merge.model.config.ReplaceStrategyConfig;
 import community.redrover.merge.util.FileUtils;
+import community.redrover.merge.util.SupportedExtension;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,12 +29,14 @@ public class ReplaceStrategyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"json", "yaml"})
-    void testReplaceStrategyPositiveAndNegativeCases(String format) {
-        Path basePath = Paths.get("src/test/resources/replace", format);
+    @EnumSource(SupportedExtension.class)
+    void testReplaceStrategyPositiveAndNegativeCases(SupportedExtension ext) {
+        String format = ext.getValue();
+        Path basePath   = Paths.get("src/test/resources/replace", format);
         Path configPath = basePath.resolve("config." + format);
 
-        ReplaceStrategyTestConfig config = FileUtils.loadFileToObject(configPath, ReplaceStrategyTestConfig.class);
+        ReplaceStrategyTestConfig config =
+                FileUtils.loadFileToObject(configPath, ReplaceStrategyTestConfig.class);
 
         ReplaceStrategy strategy = new ReplaceStrategy(config, basePath);
         strategy.execute();
@@ -45,7 +48,6 @@ public class ReplaceStrategyTest {
 
         config.setDestinationFile(config.getErrorDestinationFile());
         ReplaceStrategy strategyWithConflict = new ReplaceStrategy(config, basePath);
-
         assertThrows(IllegalStateException.class, strategyWithConflict::execute);
     }
 }
