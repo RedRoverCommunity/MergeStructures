@@ -23,12 +23,9 @@ public class CliUtils {
         StrategyArgs args     = parsed.args();
 
         @SuppressWarnings("unchecked")
-        Class<AbstractStrategyConfig> strategyConfig =
-                (Class<AbstractStrategyConfig>)(Class<?>)configClass;
-
         AbstractStrategyConfig config = loadConfigOrUseArgs(
                 parsed,
-                strategyConfig,
+                (Class<AbstractStrategyConfig>) configClass,
                 List.of(args.source, args.destination, args.result),
                 () -> fallbackFactory.apply(args)
         );
