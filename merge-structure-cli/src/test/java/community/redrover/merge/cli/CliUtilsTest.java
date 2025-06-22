@@ -84,28 +84,30 @@ public class CliUtilsTest {
 
     @ParameterizedTest
     @EnumSource(SupportedExtension.class)
-    void testLoadConfigOrUseArgsWithConfig(SupportedExtension ext) {
+    void testLoadConfigOrUseArgsWithConfig(SupportedExtension ext) throws Exception {
         String format = ext.getValue();
         try (TempFile configFile = new TempFile("config", "." + format)) {
-            if (ext == SupportedExtension.JSON) {
-                configFile.write(String.format(
+            switch (ext) {
+                case JSON -> configFile.write(String.format(
                         """
-                                {
-                                  "strategy": "append",
-                                  "sourceFile": "src.%1$s",
-                                  "destinationFile": "dest.%1$s",
-                                  "resultFile": "out.%1$s"
-                                }""", format
+                        {
+                          "strategy": "append",
+                          "sourceFile": "src.%1$s",
+                          "destinationFile": "dest.%1$s",
+                          "resultFile": "out.%1$s"
+                        }""",
+                        format
                 ));
-            } else {
-                configFile.write(String.format(
+                case YAML, YML -> configFile.write(String.format(
                         """
-                                strategy: append
-                                sourceFile: src.%1$s
-                                destinationFile: dest.%1$s
-                                resultFile: out.%1$s
-                                """, format
+                        strategy: append
+                        sourceFile: src.%1$s
+                        destinationFile: dest.%1$s
+                        resultFile: out.%1$s
+                        """,
+                        format
                 ));
+                default -> fail("Unknown extension: " + ext);
             }
 
             StrategyArgs strategyArgs = new StrategyArgs();
