@@ -2,9 +2,12 @@ package community.redrover.merge.cli;
 
 import com.beust.jcommander.JCommander;
 import community.redrover.merge.model.Strategy;
+import community.redrover.merge.model.config.AbstractStrategyConfig;
 import community.redrover.merge.model.config.AppendStrategyConfig;
+import community.redrover.merge.util.SupportedExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +33,52 @@ public class CliUtilsTest {
     @Test
     void testIsInvalidPathValid() {
         assertFalse(CliUtils.isInvalidPath("valid/path.yaml"));
+    }
+
+    @ParameterizedTest
+    @EnumSource(SupportedExtension.class)
+    void executeStrategyInvokesExecutor(SupportedExtension ext) {
+        String format = ext.getValue();
+        final boolean[] ran = { false };
+
+        CliUtils.executeStrategy(
+                "append",
+                new String[]{
+                        "--source",      "src." + format,
+                        "--destination", "dst." + format,
+                        "--result",      "out." + format
+                },
+                AbstractStrategyConfig.class,
+                strategyArgs -> {
+                    assertEquals("src." + format, strategyArgs.source);
+                    assertEquals("dst." + format, strategyArgs.destination);
+                    assertEquals("out." + format, strategyArgs.result);
+                    return new AbstractStrategyConfig() {};
+                },
+                config -> {
+                    assertNotNull(config);
+                    ran[0] = true;
+                }
+        );
+
+        assertTrue(ran[0], "Executor should have been called for format: " + format);
+    }
+
+    @Test
+    void executeStrategyWithHelpFlagThrowsCliExceptionBeforeExecutor() {
+        CliException exception = assertThrows(
+                CliException.class,
+                () -> CliUtils.executeStrategy(
+                        "append",
+                        new String[]{ "--help" },
+                        AbstractStrategyConfig.class,
+                        strategyArgs -> fail("fallbackFactory should not be called when --help is present"),
+                        config       -> fail("executor should not be called when --help is present")
+                )
+        );
+
+        assertTrue(exception.shouldShowUsage(), "Help flag should set showUsage=true");
+        assertNull(exception.getMessage(),    "Help flag should not set an error message");
     }
 
     @Test
