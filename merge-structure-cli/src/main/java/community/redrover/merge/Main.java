@@ -3,6 +3,9 @@ package community.redrover.merge;
 import community.redrover.merge.cli.CliException;
 import community.redrover.merge.cli.CliUtils;
 import community.redrover.merge.cli.command.AppendCommand;
+import community.redrover.merge.cli.command.MergeCommand;
+import community.redrover.merge.cli.command.ReplaceCommand;
+import community.redrover.merge.cli.command.ExtendCommand;
 
 public class Main {
 
@@ -16,8 +19,11 @@ public class Main {
 
         try {
             switch (strategyName) {
-                case "append" -> AppendCommand.run(strategyArgs);
-                default -> throw new CliException("Unknown strategy: " + strategyName, true);
+                case "append"  -> AppendCommand.run(strategyArgs);
+                case "merge"   -> MergeCommand.run(strategyArgs);
+                case "replace" -> ReplaceCommand.run(strategyArgs);
+                case "extend"  -> ExtendCommand.run(strategyArgs);
+                default        -> throw new CliException("Unknown strategy: " + strategyName, true);
             }
         } catch (CliException e) {
             if (e.getMessage() != null) {
