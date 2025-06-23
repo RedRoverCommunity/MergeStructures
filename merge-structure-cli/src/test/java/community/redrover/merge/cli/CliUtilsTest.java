@@ -8,7 +8,6 @@ import community.redrover.merge.util.SupportedExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import community.redrover.merge.testutils.TempFile;
 
@@ -77,7 +76,30 @@ public class CliUtilsTest {
         );
 
         assertTrue(exception.shouldShowUsage(), "Help flag should set showUsage=true");
-        assertNull(exception.getMessage(),    "Help flag should not set an error message");
+        assertNull(exception.getMessage(), "Help flag should not set an error message");
+    }
+
+    @Test
+    void executeStrategyMissingRequiredArgsThrowsCliException() {
+        String[] args = {
+                "--source",      "src.yaml",
+                "--destination", "dst.yaml"
+        };
+
+        CliException exception = assertThrows(
+                CliException.class,
+                () -> CliUtils.executeStrategy(
+                        "append",
+                        args,
+                        AbstractStrategyConfig.class,
+                        strategyArgs -> fail("fallbackFactory should not be invoked"),
+                        config       -> fail("executor should not be invoked")
+                )
+        );
+
+        assertTrue(exception.shouldShowUsage(), "Missing args should set showUsage=true");
+        assertEquals("Missing or invalid required arguments.",
+                exception.getMessage(), "Exception message must indicate missing/invalid arguments");
     }
 
     @Test
@@ -105,15 +127,14 @@ public class CliUtilsTest {
     void testLoadConfigOrUseArgsWithFallback(SupportedExtension ext) {
         String format = ext.getValue();
         StrategyArgs mockArgs = new StrategyArgs();
-        mockArgs.source = "src." + format;
+        mockArgs.source      = "src." + format;
         mockArgs.destination = "dst." + format;
-        mockArgs.result = "out." + format;
+        mockArgs.result      = "out." + format;
         ParsedStrategy parsed = new ParsedStrategy(mockArgs, null);
 
         AppendStrategyConfig actual = CliUtils.loadConfigOrUseArgs(
                 parsed,
                 AppendStrategyConfig.class,
-                List.of(mockArgs.source, mockArgs.destination, mockArgs.result),
                 () -> new AppendStrategyConfig(
                         Strategy.APPEND,
                         "src." + format,
@@ -133,6 +154,13 @@ public class CliUtilsTest {
     @EnumSource(SupportedExtension.class)
     void testLoadConfigOrUseArgsWithConfig(SupportedExtension ext) {
         String format = ext.getValue();
+        AppendStrategyConfig expected = new AppendStrategyConfig(
+                Strategy.APPEND,
+                "src." + format,
+                "dest." + format,
+                "out." + format
+        );
+
         try (TempFile configFile = new TempFile("config", "." + format)) {
             switch (ext) {
                 case JSON -> configFile.write(String.format(
@@ -168,13 +196,7 @@ public class CliUtilsTest {
             AppendStrategyConfig actual = CliUtils.loadConfigOrUseArgs(
                     parsed,
                     AppendStrategyConfig.class,
-                    List.of("src." + format, "dest." + format, "out." + format),
-                    () -> new AppendStrategyConfig(
-                            Strategy.APPEND,
-                            "src." + format,
-                            "dest." + format,
-                            "out." + format
-                    )
+                    () -> expected
             );
 
             assertAll(
@@ -190,9 +212,9 @@ public class CliUtilsTest {
     void testLoadConfigOrUseArgsWithArgsOnly(SupportedExtension ext) {
         String format = ext.getValue();
         StrategyArgs strategyArgs = new StrategyArgs();
-        strategyArgs.source = "src." + format;
+        strategyArgs.source      = "src." + format;
         strategyArgs.destination = "dest." + format;
-        strategyArgs.result = "out." + format;
+        strategyArgs.result      = "out." + format;
 
         ParsedStrategy parsed = new ParsedStrategy(
                 strategyArgs,
@@ -202,7 +224,6 @@ public class CliUtilsTest {
         AppendStrategyConfig actual = CliUtils.loadConfigOrUseArgs(
                 parsed,
                 AppendStrategyConfig.class,
-                List.of(strategyArgs.source, strategyArgs.destination, strategyArgs.result),
                 () -> new AppendStrategyConfig(
                         Strategy.APPEND,
                         strategyArgs.source,
