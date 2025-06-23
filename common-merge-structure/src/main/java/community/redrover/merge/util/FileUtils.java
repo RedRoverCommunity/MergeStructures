@@ -14,8 +14,7 @@ public class FileUtils {
     public static LinkedHashMap<String, Object> loadFileToMap(Path path) {
         try {
             File file = getFile(path);
-            String fileExtension = getFileExtension(file.getName());
-            SupportedExtension supportedExtension = SupportedExtension.fromValue(fileExtension);
+            SupportedExtension supportedExtension = SupportedExtension.fromValue(getFileExtension(file.getName()));
 
             return supportedExtension.getObjectMapper().readValue(file, new TypeReference<>() {});
         } catch (IOException e) {
@@ -24,13 +23,12 @@ public class FileUtils {
     }
 
     public static void writeMapToFile(Path filePath, LinkedHashMap<String, Object> data) {
-        File file = filePath.toFile();
         SupportedExtension supportedExtension = SupportedExtension.fromValue(getFileExtension(filePath.getFileName().toString()));
 
         try {
             supportedExtension.getObjectMapper()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValue(file, data);
+                    .writeValue(filePath.toFile(), data);
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to write file: " + filePath, e);
         }
