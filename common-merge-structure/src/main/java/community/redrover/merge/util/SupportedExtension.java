@@ -44,10 +44,10 @@ public enum SupportedExtension {
                 .build();
     }
 
-    public static SupportedExtension fromValue(String value) {
+    public static SupportedExtension fromValue(String extValue) {
         return Arrays.stream(values())
-                .filter(ext -> ext.value.equalsIgnoreCase(value))
+                .filter(supportedExtension -> supportedExtension.value.equalsIgnoreCase(extValue))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unsupported extension: " + value));
+                .orElseThrow(() -> new IllegalArgumentException("Unsupported extension: " + extValue));
     }
 }
