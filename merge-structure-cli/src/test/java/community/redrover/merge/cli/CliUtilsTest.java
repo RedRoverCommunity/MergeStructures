@@ -77,7 +77,30 @@ public class CliUtilsTest {
         );
 
         assertTrue(exception.shouldShowUsage(), "Help flag should set showUsage=true");
-        assertNull(exception.getMessage(),    "Help flag should not set an error message");
+        assertNull(exception.getMessage(), "Help flag should not set an error message");
+    }
+
+    @Test
+    void executeStrategyMissingRequiredArgsThrowsCliException() {
+        String[] args = {
+                "--source",      "src.yaml",
+                "--destination", "dst.yaml"
+        };
+
+        CliException exception = assertThrows(
+                CliException.class,
+                () -> CliUtils.executeStrategy(
+                        "append",
+                        args,
+                        AbstractStrategyConfig.class,
+                        strategyArgs -> fail("fallbackFactory should not be invoked"),
+                        config       -> fail("executor should not be invoked")
+                )
+        );
+
+        assertTrue(exception.shouldShowUsage(), "Missing args should set showUsage=true");
+        assertEquals("Missing or invalid required arguments.",
+                exception.getMessage(), "Exception message must indicate missing/invalid arguments");
     }
 
     @Test
