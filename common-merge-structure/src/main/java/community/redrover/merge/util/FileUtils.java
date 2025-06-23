@@ -15,9 +15,9 @@ public class FileUtils {
         try {
             File file = getFile(path);
             String fileExtension = getFileExtension(file.getName());
-            SupportedExtension extension = SupportedExtension.fromValue(fileExtension);
+            SupportedExtension supportedExtension = SupportedExtension.fromValue(fileExtension);
 
-            return extension.getObjectMapper().readValue(file, new TypeReference<>() {});
+            return supportedExtension.getObjectMapper().readValue(file, new TypeReference<>() {});
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to read file: " + path, e);
         }
@@ -25,11 +25,10 @@ public class FileUtils {
 
     public static void writeMapToFile(Path filePath, LinkedHashMap<String, Object> data) {
         File file = filePath.toFile();
-        String extension = getFileExtension(filePath.getFileName().toString());
-        SupportedExtension ext = SupportedExtension.fromValue(extension);
+        SupportedExtension supportedExtension = SupportedExtension.fromValue(getFileExtension(filePath.getFileName().toString()));
 
         try {
-            ext.getObjectMapper()
+            supportedExtension.getObjectMapper()
                     .writerWithDefaultPrettyPrinter()
                     .writeValue(file, data);
         } catch (IOException e) {
