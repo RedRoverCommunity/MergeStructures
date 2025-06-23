@@ -5,6 +5,7 @@ import com.beust.jcommander.ParameterException;
 import community.redrover.merge.model.config.AbstractStrategyConfig;
 import community.redrover.merge.util.FileUtils;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -26,7 +27,7 @@ public class CliUtils {
         AbstractStrategyConfig config = loadConfigOrUseArgs(
                 parsed,
                 (Class<AbstractStrategyConfig>) configClass,
-                List.of(args.source, args.destination, args.result),
+                Arrays.asList(args.source, args.destination, args.result),
                 () -> fallbackFactory.apply(args)
         );
 
