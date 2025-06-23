@@ -5,11 +5,10 @@ import com.beust.jcommander.ParameterException;
 import community.redrover.merge.model.config.AbstractStrategyConfig;
 import community.redrover.merge.util.FileUtils;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class CliUtils {
 
@@ -20,15 +19,13 @@ public class CliUtils {
             Function<StrategyArgs, AbstractStrategyConfig> fallbackFactory,
             Consumer<AbstractStrategyConfig> executor
     ) {
-        ParsedStrategy parsed = parseArgs(strategyName, strategyArgs);
-        StrategyArgs args     = parsed.args();
+        ParsedStrategy parsedArgs = parseArgs(strategyName, strategyArgs);
 
         @SuppressWarnings("unchecked")
         AbstractStrategyConfig config = loadConfigOrUseArgs(
-                parsed,
+                parsedArgs,
                 (Class<AbstractStrategyConfig>) configClass,
-                Arrays.asList(args.source, args.destination, args.result),
-                () -> fallbackFactory.apply(args)
+                () -> fallbackFactory.apply(parsedArgs.args())
         );
 
         executor.accept(config);
@@ -59,7 +56,6 @@ public class CliUtils {
     public static <T> T loadConfigOrUseArgs(
             ParsedStrategy parsedArgs,
             Class<T> configClass,
-            List<String> requiredArgs,
             Supplier<T> fallbackConfigSupplier
     ) {
         StrategyArgs args = parsedArgs.args();
@@ -73,7 +69,7 @@ public class CliUtils {
             return FileUtils.loadFileToObject(Paths.get(args.config), configClass);
         }
 
-        if (requiredArgs.stream().anyMatch(CliUtils::isInvalidPath)) {
+        if (Stream.of(args.source, args.destination, args.result).anyMatch(CliUtils::isInvalidPath)) {
             throw new CliException("Missing or invalid required arguments.", jc);
         }
 

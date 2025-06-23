@@ -14,7 +14,6 @@ public class Main {
             }
 
             String strategyName = args[0].toLowerCase();
-            String[] inputArgs  = Arrays.copyOfRange(args, 1, args.length);
             Strategy strategy;
 
             try {
@@ -25,7 +24,7 @@ public class Main {
 
             CliUtils.executeStrategy(
                     strategyName,
-                    inputArgs,
+                    Arrays.copyOfRange(args, 1, args.length),
                     strategy.getConfigClass(),
                     strategyArgs -> strategy.buildConfig(
                             strategyArgs.source,
