@@ -2,10 +2,11 @@ package community.redrover.merge.strategy;
 
 import community.redrover.merge.model.config.MergeStrategyConfig;
 import community.redrover.merge.util.FileUtils;
+import community.redrover.merge.util.SupportedExtension;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,12 +30,15 @@ public class MergeStrategyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"json", "yaml"})
-    void testMergeStrategyPositiveAndNegativeCases(String format) {
+    @EnumSource(SupportedExtension.class)
+    void testMergeStrategyPositiveAndNegativeCases(SupportedExtension ext) {
+        String format = ext.getValue();
         Path basePath = Paths.get("src/test/resources/merge", format);
         Path configPath = basePath.resolve("config." + format);
 
-        MergeStrategyTestConfig config = FileUtils.loadFileToObject(configPath, MergeStrategyTestConfig.class);
+        MergeStrategyTestConfig config =
+                FileUtils.loadFileToObject(configPath, MergeStrategyTestConfig.class);
+
         MergeStrategy strategy = new MergeStrategy(config, basePath);
         strategy.execute();
 
@@ -45,7 +49,6 @@ public class MergeStrategyTest {
 
         config.setDestinationFile(config.getErrorDestinationFile());
         MergeStrategy strategyWithConflict = new MergeStrategy(config, basePath);
-
         assertThrows(IllegalStateException.class, strategyWithConflict::execute);
     }
 }

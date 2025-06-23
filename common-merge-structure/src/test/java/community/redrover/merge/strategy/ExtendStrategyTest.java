@@ -2,10 +2,11 @@ package community.redrover.merge.strategy;
 
 import community.redrover.merge.model.config.ExtendStrategyConfig;
 import community.redrover.merge.util.FileUtils;
+import community.redrover.merge.util.SupportedExtension;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,12 +30,14 @@ public class ExtendStrategyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"json", "yaml"})
-    void testExtendStrategyPositiveAndNegativeCases(String format) {
+    @EnumSource(SupportedExtension.class)
+    void testExtendStrategyPositiveAndNegativeCases(SupportedExtension ext) {
+        String format = ext.getValue();
         Path basePath = Paths.get("src/test/resources/extend", format);
         Path configPath = basePath.resolve("config." + format);
 
-        ExtendStrategyTestConfig config = FileUtils.loadFileToObject(configPath, ExtendStrategyTestConfig.class);
+        ExtendStrategyTestConfig config =
+                FileUtils.loadFileToObject(configPath, ExtendStrategyTestConfig.class);
 
         ExtendStrategy strategy = new ExtendStrategy(config, basePath);
         strategy.execute();
@@ -46,7 +49,6 @@ public class ExtendStrategyTest {
 
         config.setDestinationFile(config.getErrorDestinationFile());
         ExtendStrategy strategyWithConflict = new ExtendStrategy(config, basePath);
-
         assertThrows(IllegalStateException.class, strategyWithConflict::execute);
     }
 }
