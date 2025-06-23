@@ -152,7 +152,7 @@ public class CliUtilsTest {
 
     @ParameterizedTest
     @EnumSource(SupportedExtension.class)
-    void testLoadConfigOrUseArgsWithConfig(SupportedExtension ext) throws Exception {
+    void testLoadConfigOrUseArgsWithConfig(SupportedExtension ext) {
         String format = ext.getValue();
         AppendStrategyConfig expected = new AppendStrategyConfig(
                 Strategy.APPEND,
