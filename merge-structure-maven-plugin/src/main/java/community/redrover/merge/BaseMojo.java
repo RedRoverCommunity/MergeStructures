@@ -53,6 +53,6 @@ public abstract class BaseMojo extends AbstractMojo {
         if (e.shouldShowUsage()) {
             getLog().info("Run with -X to see usage details.");
         }
-        throw new MojoExecutionException(goal.substring(0,1).toUpperCase() + goal.substring(1) + " failed", e);
+        throw new MojoExecutionException(goal.substring(0,1).toUpperCase() + goal.substring(1) + " goal failed", e);
     }
 }
