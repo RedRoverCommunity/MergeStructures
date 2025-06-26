@@ -42,17 +42,17 @@ public abstract class BaseMojo extends AbstractMojo {
             );
             getLog().info(goal.substring(0,1).toUpperCase() + goal.substring(1) + " strategy completed successfully.");
         } catch (CliException e) {
-            MojoErrorHandler(goal, e);
+            mojoErrorHandler(goal, e);
         }
     }
 
-    protected void MojoErrorHandler(String goal, CliException e) throws MojoExecutionException {
+    protected void mojoErrorHandler(String goal, CliException e) throws MojoExecutionException {
         if (e.getMessage() != null) {
             getLog().error(e.getMessage());
         }
         if (e.shouldShowUsage()) {
             getLog().info("Run with -X to see usage details.");
         }
-        throw new MojoExecutionException(goal + " goal failed", e);
+        throw new MojoExecutionException(goal.substring(0,1).toUpperCase() + goal.substring(1) + " failed", e);
     }
 }
