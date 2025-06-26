@@ -21,17 +21,15 @@ public class CliUtils {
     ) {
         ParsedStrategy parsedArgs = parseArgs(strategyName, strategyArgs);
 
-        @SuppressWarnings("unchecked")
         AbstractStrategyConfig config = loadConfigOrUseArgs(
                 parsedArgs,
-                (Class<AbstractStrategyConfig>) configClass,
+                configClass,
                 () -> fallbackFactory.apply(parsedArgs.args())
         );
 
         executor.accept(config);
 
-        String cap = strategyName.substring(0,1).toUpperCase() + strategyName.substring(1);
-        System.out.println(cap + " strategy completed successfully.");
+        System.out.println(strategyName.substring(0,1).toUpperCase() + strategyName.substring(1) + " strategy completed successfully.");
     }
 
     public static ParsedStrategy parseArgs(String strategyName, String[] args) {
@@ -53,10 +51,10 @@ public class CliUtils {
         return new ParsedStrategy(strategyArgs, jc);
     }
 
-    public static <T> T loadConfigOrUseArgs(
+    public static AbstractStrategyConfig loadConfigOrUseArgs(
             ParsedStrategy parsedArgs,
-            Class<T> configClass,
-            Supplier<T> fallbackConfigSupplier
+            Class<? extends AbstractStrategyConfig> configClass,
+            Supplier<AbstractStrategyConfig> fallbackConfigSupplier
     ) {
         StrategyArgs args = parsedArgs.args();
         JCommander jc = parsedArgs.commander();

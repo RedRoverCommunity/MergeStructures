@@ -37,14 +37,14 @@ public class CliUtilsTest {
     @EnumSource(SupportedExtension.class)
     void executeStrategyInvokesExecutor(SupportedExtension ext) {
         String format = ext.getValue();
-        final boolean[] ran = { false };
+        final boolean[] ran = {false};
 
         CliUtils.executeStrategy(
                 "append",
                 new String[]{
-                        "--source",      "src." + format,
+                        "--source", "src." + format,
                         "--destination", "dst." + format,
-                        "--result",      "out." + format
+                        "--result", "out." + format
                 },
                 AbstractStrategyConfig.class,
                 strategyArgs -> {
@@ -68,10 +68,10 @@ public class CliUtilsTest {
                 CliException.class,
                 () -> CliUtils.executeStrategy(
                         "append",
-                        new String[]{ "--help" },
+                        new String[]{"--help"},
                         AbstractStrategyConfig.class,
                         strategyArgs -> fail("fallbackFactory should not be called when --help is present"),
-                        config       -> fail("executor should not be called when --help is present")
+                        config -> fail("executor should not be called when --help is present")
                 )
         );
 
@@ -82,7 +82,7 @@ public class CliUtilsTest {
     @Test
     void executeStrategyMissingRequiredArgsThrowsCliException() {
         String[] args = {
-                "--source",      "src.yaml",
+                "--source", "src.yaml",
                 "--destination", "dst.yaml"
         };
 
@@ -93,7 +93,7 @@ public class CliUtilsTest {
                         args,
                         AbstractStrategyConfig.class,
                         strategyArgs -> fail("fallbackFactory should not be invoked"),
-                        config       -> fail("executor should not be invoked")
+                        config -> fail("executor should not be invoked")
                 )
         );
 
@@ -127,26 +127,29 @@ public class CliUtilsTest {
     void testLoadConfigOrUseArgsWithFallback(SupportedExtension ext) {
         String format = ext.getValue();
         StrategyArgs mockArgs = new StrategyArgs();
-        mockArgs.source      = "src." + format;
+        mockArgs.source = "src." + format;
         mockArgs.destination = "dst." + format;
-        mockArgs.result      = "out." + format;
-        ParsedStrategy parsed = new ParsedStrategy(mockArgs, null);
+        mockArgs.result = "out." + format;
+        ParsedStrategy parsedArgs = new ParsedStrategy(mockArgs, null);
 
-        AppendStrategyConfig actual = CliUtils.loadConfigOrUseArgs(
-                parsed,
+        AbstractStrategyConfig config = CliUtils.loadConfigOrUseArgs(
+                parsedArgs,
                 AppendStrategyConfig.class,
                 () -> new AppendStrategyConfig(
                         Strategy.APPEND,
-                        "src." + format,
-                        "dst." + format,
-                        "out." + format
+                        mockArgs.source,
+                        mockArgs.destination,
+                        mockArgs.result
                 )
         );
 
+        assertInstanceOf(AppendStrategyConfig.class, config);
+        AppendStrategyConfig actual = (AppendStrategyConfig) config;
+
         assertAll(
-                () -> assertEquals("src." + format, actual.getSourceFile()),
-                () -> assertEquals("dst." + format, actual.getDestinationFile()),
-                () -> assertEquals("out." + format, actual.getResultFile())
+                () -> assertEquals(mockArgs.source, actual.getSourceFile()),
+                () -> assertEquals(mockArgs.destination, actual.getDestinationFile()),
+                () -> assertEquals(mockArgs.result, actual.getResultFile())
         );
     }
 
@@ -188,21 +191,21 @@ public class CliUtilsTest {
             StrategyArgs strategyArgs = new StrategyArgs();
             strategyArgs.config = configFile.getPath().toString();
 
-            ParsedStrategy parsed = new ParsedStrategy(
-                    strategyArgs,
-                    JCommander.newBuilder().addObject(strategyArgs).build()
-            );
+            ParsedStrategy parsedArgs = new ParsedStrategy(strategyArgs, JCommander.newBuilder().addObject(strategyArgs).build());
 
-            AppendStrategyConfig actual = CliUtils.loadConfigOrUseArgs(
-                    parsed,
+            AbstractStrategyConfig config = CliUtils.loadConfigOrUseArgs(
+                    parsedArgs,
                     AppendStrategyConfig.class,
                     () -> expected
             );
 
+            assertInstanceOf(AppendStrategyConfig.class, config);
+            AppendStrategyConfig actual = (AppendStrategyConfig) config;
+
             assertAll(
-                    () -> assertEquals("src." + format, actual.getSourceFile()),
-                    () -> assertEquals("dest." + format, actual.getDestinationFile()),
-                    () -> assertEquals("out." + format, actual.getResultFile())
+                    () -> assertEquals(expected.getSourceFile(), actual.getSourceFile()),
+                    () -> assertEquals(expected.getDestinationFile(), actual.getDestinationFile()),
+                    () -> assertEquals(expected.getResultFile(), actual.getResultFile())
             );
         }
     }
@@ -212,17 +215,14 @@ public class CliUtilsTest {
     void testLoadConfigOrUseArgsWithArgsOnly(SupportedExtension ext) {
         String format = ext.getValue();
         StrategyArgs strategyArgs = new StrategyArgs();
-        strategyArgs.source      = "src." + format;
+        strategyArgs.source = "src." + format;
         strategyArgs.destination = "dest." + format;
-        strategyArgs.result      = "out." + format;
+        strategyArgs.result = "out." + format;
 
-        ParsedStrategy parsed = new ParsedStrategy(
-                strategyArgs,
-                JCommander.newBuilder().addObject(strategyArgs).build()
-        );
+        ParsedStrategy parsedArgs = new ParsedStrategy(strategyArgs, JCommander.newBuilder().addObject(strategyArgs).build());
 
-        AppendStrategyConfig actual = CliUtils.loadConfigOrUseArgs(
-                parsed,
+        AbstractStrategyConfig config = CliUtils.loadConfigOrUseArgs(
+                parsedArgs,
                 AppendStrategyConfig.class,
                 () -> new AppendStrategyConfig(
                         Strategy.APPEND,
@@ -231,6 +231,9 @@ public class CliUtilsTest {
                         strategyArgs.result
                 )
         );
+
+        assertInstanceOf(AppendStrategyConfig.class, config);
+        AppendStrategyConfig actual = (AppendStrategyConfig) config;
 
         assertAll(
                 () -> assertEquals("src." + format, actual.getSourceFile()),
