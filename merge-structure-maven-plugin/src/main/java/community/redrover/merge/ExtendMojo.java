@@ -5,6 +5,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 
+@SuppressWarnings("FieldCanBeLocal")
 @Mojo(name = "extend", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, threadSafe = true)
 public class ExtendMojo extends BaseMojo {
 
