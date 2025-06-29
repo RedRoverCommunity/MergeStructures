@@ -87,7 +87,7 @@ public enum Strategy {
 
     public static Optional<Strategy> fromName(String name) {
         return Arrays.stream(values())
-                .filter(s -> s.name().equalsIgnoreCase(name))
+                .filter(strategy -> strategy.name().equalsIgnoreCase(name))
                 .findFirst();
     }
 
