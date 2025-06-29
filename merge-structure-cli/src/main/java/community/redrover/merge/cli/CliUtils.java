@@ -20,7 +20,7 @@ public class CliUtils {
 
     @SuppressWarnings("unchecked")
     public static <T extends AbstractStrategyConfig> T buildStrategyConfig(String[] strategyArgs, Strategy strategy) {
-        ParsedStrategy parsedStrategy = parseArgs(strategy.getName(), strategyArgs);
+        ParsedStrategy parsedStrategy = parseArgs(strategy.name().toLowerCase(), strategyArgs);
         StrategyArgs args = parsedStrategy.args();
         Class<T> configClass = (Class<T>) strategy.getConfigClass();
 
