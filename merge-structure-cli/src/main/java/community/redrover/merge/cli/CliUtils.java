@@ -5,6 +5,9 @@ import com.beust.jcommander.ParameterException;
 import community.redrover.merge.model.Strategy;
 import community.redrover.merge.model.config.AbstractStrategyConfig;
 import community.redrover.merge.util.FileUtils;
+import java.nio.file.Paths;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class CliUtils {
 
@@ -46,22 +49,23 @@ public class CliUtils {
         return new ParsedStrategy(strategyArgs, jc);
     }
 
-    public static <T extends AbstractStrategyConfig> T loadConfigOrUseArgs(ParsedStrategy parsedArgs,
+    public static <T extends AbstractStrategyConfig> T loadConfigOrUseArgs(
+            ParsedStrategy parsedArgs,
             Class<T> configClass,
-            java.util.function.Supplier<T> fallbackConfigSupplier
+            Supplier<T> fallbackConfigSupplier
     ) {
         StrategyArgs args = parsedArgs.args();
-        var jc = parsedArgs.commander();
+        JCommander jc = parsedArgs.commander();
 
         if (args.config != null) {
             if (isInvalidPath(args.config)) {
                 throw new CliException("Invalid value for --config: " + args.config, jc);
             }
 
-            return FileUtils.loadFileToObject(java.nio.file.Paths.get(args.config), configClass);
+            return FileUtils.loadFileToObject(Paths.get(args.config), configClass);
         }
 
-        if (java.util.stream.Stream.of(args.source, args.destination, args.result).anyMatch(CliUtils::isInvalidPath)) {
+        if (Stream.of(args.source, args.destination, args.result).anyMatch(CliUtils::isInvalidPath)) {
             throw new CliException("Missing or invalid required arguments.", jc);
         }
 
