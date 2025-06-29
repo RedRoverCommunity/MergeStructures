@@ -2,34 +2,32 @@ package community.redrover.merge.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import community.redrover.merge.model.Strategy;
 import community.redrover.merge.model.config.AbstractStrategyConfig;
 import community.redrover.merge.util.FileUtils;
 import java.nio.file.Paths;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class CliUtils {
 
-    public static void executeStrategy(
-            String strategyName,
-            String[] strategyArgs,
-            Class<? extends AbstractStrategyConfig> configClass,
-            Function<StrategyArgs, AbstractStrategyConfig> fallbackFactory,
-            Consumer<AbstractStrategyConfig> executor
-    ) {
-        ParsedStrategy parsedArgs = parseArgs(strategyName, strategyArgs);
+    public static void validateArgs(String[] args) {
+        if (args == null || args.length == 0) {
+            throw new CliException("No arguments provided.", true);
+        }
+    }
 
-        AbstractStrategyConfig config = loadConfigOrUseArgs(
-                parsedArgs,
-                configClass,
-                () -> fallbackFactory.apply(parsedArgs.args())
-        );
+    public static Strategy resolveStrategy(String name) {
+        return Strategy.fromName(name).orElseThrow(() -> new CliException("Unknown strategy: " + name, true));
+    }
 
-        executor.accept(config);
+    @SuppressWarnings("unchecked")
+    public static <T extends AbstractStrategyConfig> T buildStrategyConfig(String[] strategyArgs, Strategy strategy) {
+        ParsedStrategy parsedStrategy = parseArgs(strategy.name().toLowerCase(), strategyArgs);
+        StrategyArgs args = parsedStrategy.args();
+        Class<T> configClass = (Class<T>) strategy.getConfigClass();
 
-        System.out.println(strategyName.substring(0,1).toUpperCase() + strategyName.substring(1) + " strategy completed successfully.");
+        return loadConfigOrUseArgs(parsedStrategy, configClass, () -> (T) strategy.buildConfig(args.source, args.destination, args.result));
     }
 
     public static ParsedStrategy parseArgs(String strategyName, String[] args) {
@@ -51,10 +49,10 @@ public class CliUtils {
         return new ParsedStrategy(strategyArgs, jc);
     }
 
-    public static AbstractStrategyConfig loadConfigOrUseArgs(
+    public static <T extends AbstractStrategyConfig> T loadConfigOrUseArgs(
             ParsedStrategy parsedArgs,
-            Class<? extends AbstractStrategyConfig> configClass,
-            Supplier<AbstractStrategyConfig> fallbackConfigSupplier
+            Class<T> configClass,
+            Supplier<T> fallbackConfigSupplier
     ) {
         StrategyArgs args = parsedArgs.args();
         JCommander jc = parsedArgs.commander();
@@ -94,6 +92,7 @@ public class CliUtils {
 
     public static void printUsage() {
         System.out.println("""
+            
             Usage:
               java -jar merge-structure-cli.jar <strategy> [options]
 

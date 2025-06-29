@@ -3,6 +3,7 @@ package community.redrover.merge;
 import community.redrover.merge.cli.CliException;
 import community.redrover.merge.cli.CliUtils;
 import community.redrover.merge.model.Strategy;
+import community.redrover.merge.model.config.AbstractStrategyConfig;
 import lombok.Getter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -33,14 +34,11 @@ public abstract class BaseMojo extends AbstractMojo {
         };
 
         try {
-            CliUtils.executeStrategy(
-                    goal,
-                    args,
-                    strategy.getConfigClass(),
-                    strategyArgs -> strategy.buildConfig(strategyArgs.source, strategyArgs.destination, strategyArgs.result),
-                    config -> strategy.createStrategy(config).execute()
-            );
-            getLog().info(goal.substring(0,1).toUpperCase() + goal.substring(1) + " strategy completed successfully.");
+            AbstractStrategyConfig config = CliUtils.buildStrategyConfig(args, strategy);
+
+            strategy.execute(config);
+
+            getLog().info(capitalize(goal) + " strategy completed successfully.");
         } catch (CliException e) {
             mojoErrorHandler(goal, e);
         }
@@ -53,6 +51,10 @@ public abstract class BaseMojo extends AbstractMojo {
         if (e.shouldShowUsage()) {
             getLog().info("Run with -X to see usage details.");
         }
-        throw new MojoExecutionException(goal.substring(0,1).toUpperCase() + goal.substring(1) + " goal failed", e);
+        throw new MojoExecutionException(capitalize(goal) + " goal failed", e);
+    }
+
+    private String capitalize(String text) {
+        return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 }

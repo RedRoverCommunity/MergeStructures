@@ -3,37 +3,20 @@ package community.redrover.merge;
 import community.redrover.merge.cli.CliException;
 import community.redrover.merge.cli.CliUtils;
 import community.redrover.merge.model.Strategy;
+import community.redrover.merge.model.config.AbstractStrategyConfig;
 import java.util.Arrays;
 
 public class Main {
 
     public static void main(String[] args) {
         try {
-            if (args.length == 0) {
-                throw new CliException("No arguments provided.", true);
-            }
+            CliUtils.validateArgs(args);
+            Strategy strategy = CliUtils.resolveStrategy(args[0]);
+            AbstractStrategyConfig config = CliUtils.buildStrategyConfig(Arrays.copyOfRange(args, 1, args.length), strategy);
 
-            String strategyName = args[0].toLowerCase();
-            Strategy strategy;
+            strategy.execute(config);
 
-            try {
-                strategy = Strategy.valueOf(strategyName.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new CliException("Unknown strategy: " + strategyName, true);
-            }
-
-            CliUtils.executeStrategy(
-                    strategyName,
-                    Arrays.copyOfRange(args, 1, args.length),
-                    strategy.getConfigClass(),
-                    strategyArgs -> strategy.buildConfig(
-                            strategyArgs.source,
-                            strategyArgs.destination,
-                            strategyArgs.result
-                    ),
-                    config -> strategy.createStrategy(config).execute()
-            );
-
+            System.out.println(strategy.getName() + " strategy completed successfully.");
         } catch (CliException e) {
             CliUtils.exitWithError(e);
         }
