@@ -8,8 +8,12 @@ import community.redrover.merge.util.FileUtils;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CliUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(CliUtils.class);
 
     public static void validateArgs(String[] args) {
         if (args == null || args.length == 0) {
@@ -78,7 +82,7 @@ public class CliUtils {
 
     public static void exitWithError(CliException e) {
         if (e.getMessage() != null) {
-            System.err.println(e.getMessage());
+            printAndLogCliError(log, e.getMessage());
         }
         if (e.shouldShowUsage()) {
             if (e.getCommander() != null) {
@@ -88,6 +92,16 @@ public class CliUtils {
             }
         }
         System.exit(1);
+    }
+
+    public static void printAndLogCliInfo(Logger log, String message) {
+        System.out.println(message);
+        log.debug(message);
+    }
+
+    public static void printAndLogCliError(Logger log, String message) {
+        System.err.println(message);
+        log.error(message);
     }
 
     public static void printUsage() {
