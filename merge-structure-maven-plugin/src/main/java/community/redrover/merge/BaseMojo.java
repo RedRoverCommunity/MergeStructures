@@ -26,7 +26,7 @@ public abstract class BaseMojo extends AbstractMojo {
     @Override
     public final void execute() throws MojoExecutionException {
         Strategy strategy = getStrategy();
-        String goal = strategy.name().toLowerCase();
+        String goal = strategy.getName();
         String[] args = {
                 "--source", getSourceFile(),
                 "--destination", getDestinationFile(),
@@ -38,7 +38,7 @@ public abstract class BaseMojo extends AbstractMojo {
 
             strategy.execute(config);
 
-            getLog().info(capitalize(goal) + " strategy completed successfully.");
+            getLog().info(goal + " strategy completed successfully.");
         } catch (CliException e) {
             mojoErrorHandler(goal, e);
         }
@@ -51,10 +51,6 @@ public abstract class BaseMojo extends AbstractMojo {
         if (e.shouldShowUsage()) {
             getLog().info("Run with -X to see usage details.");
         }
-        throw new MojoExecutionException(capitalize(goal) + " goal failed", e);
-    }
-
-    private String capitalize(String text) {
-        return text.substring(0, 1).toUpperCase() + text.substring(1);
+        throw new MojoExecutionException(goal + " goal failed", e);
     }
 }
