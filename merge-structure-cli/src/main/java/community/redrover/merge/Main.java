@@ -4,13 +4,11 @@ import community.redrover.merge.cli.CliException;
 import community.redrover.merge.cli.CliUtils;
 import community.redrover.merge.model.Strategy;
 import community.redrover.merge.model.config.AbstractStrategyConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import java.util.Arrays;
 
+@Slf4j
 public class Main {
-
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         try {
@@ -20,7 +18,7 @@ public class Main {
 
             strategy.execute(config);
 
-            CliUtils.printAndLogCliInfo(log, strategy.getName() + " strategy completed successfully.");
+            CliUtils.printAndLogCliInfo(strategy.getName() + " strategy completed successfully.");
         } catch (CliException e) {
             CliUtils.exitWithError(e);
         }

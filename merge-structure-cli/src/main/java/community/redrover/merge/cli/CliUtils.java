@@ -5,15 +5,17 @@ import com.beust.jcommander.ParameterException;
 import community.redrover.merge.model.Strategy;
 import community.redrover.merge.model.config.AbstractStrategyConfig;
 import community.redrover.merge.util.FileUtils;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
+@UtilityClass
 public class CliUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(CliUtils.class);
+    public static final int ERROR_EXIT_CODE = 1;
 
     public static void validateArgs(String[] args) {
         if (args == null || args.length == 0) {
@@ -82,7 +84,7 @@ public class CliUtils {
 
     public static void exitWithError(CliException e) {
         if (e.getMessage() != null) {
-            printAndLogCliError(log, e.getMessage());
+            printAndLogCliError(e.getMessage());
         }
         if (e.shouldShowUsage()) {
             if (e.getCommander() != null) {
@@ -91,15 +93,15 @@ public class CliUtils {
                 printUsage();
             }
         }
-        System.exit(1);
+        System.exit(ERROR_EXIT_CODE);
     }
 
-    public static void printAndLogCliInfo(Logger log, String message) {
+    public static void printAndLogCliInfo(String message) {
         System.out.println(message);
-        log.debug(message);
+        log.info(message);
     }
 
-    public static void printAndLogCliError(Logger log, String message) {
+    public static void printAndLogCliError(String message) {
         System.err.println(message);
         log.error(message);
     }
