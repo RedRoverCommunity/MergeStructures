@@ -29,37 +29,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>extend-json</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>extend</goal></goals>
-                        <configuration>
-                            <sourceFile>${project.basedir}/src/main/resources/extend/json/source.json</sourceFile>
-                            <destinationFile>${project.basedir}/src/main/resources/extend/json/destination.json</destinationFile>
-                            <resultFile>${project.build.directory}/results/extend/json/result.json</resultFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>merge-json</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>merge</goal></goals>
-                        <configuration>
-                            <sourceFile>${project.basedir}/src/main/resources/merge/json/source.json</sourceFile>
-                            <destinationFile>${project.basedir}/src/main/resources/merge/json/destination.json</destinationFile>
-                            <resultFile>${project.build.directory}/results/merge/json/result.json</resultFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>replace-json</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>replace</goal></goals>
-                        <configuration>
-                            <sourceFile>${project.basedir}/src/main/resources/replace/json/source.json</sourceFile>
-                            <destinationFile>${project.basedir}/src/main/resources/replace/json/destination.json</destinationFile>
-                            <resultFile>${project.build.directory}/results/replace/json/result.json</resultFile>
-                        </configuration>
-                    </execution>
-
-                    <execution>
                         <id>append-yaml</id>
                         <phase>process-resources</phase>
                         <goals><goal>append</goal></goals>
@@ -67,6 +36,27 @@
                             <sourceFile>${project.basedir}/src/main/resources/append/yaml/source.yaml</sourceFile>
                             <destinationFile>${project.basedir}/src/main/resources/append/yaml/destination.yaml</destinationFile>
                             <resultFile>${project.build.directory}/results/append/yaml/result.yaml</resultFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>append-yml</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>append</goal></goals>
+                        <configuration>
+                            <sourceFile>${project.basedir}/src/main/resources/append/yml/source.yml</sourceFile>
+                            <destinationFile>${project.basedir}/src/main/resources/append/yml/destination.yml</destinationFile>
+                            <resultFile>${project.build.directory}/results/append/yml/result.yml</resultFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>extend-json</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>extend</goal></goals>
+                        <configuration>
+                            <sourceFile>${project.basedir}/src/main/resources/extend/json/source.json</sourceFile>
+                            <destinationFile>${project.basedir}/src/main/resources/extend/json/destination.json</destinationFile>
+                            <resultFile>${project.build.directory}/results/extend/json/result.json</resultFile>
                         </configuration>
                     </execution>
                     <execution>
@@ -80,6 +70,27 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>extend-yml</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>extend</goal></goals>
+                        <configuration>
+                            <sourceFile>${project.basedir}/src/main/resources/extend/yml/source.yml</sourceFile>
+                            <destinationFile>${project.basedir}/src/main/resources/extend/yml/destination.yml</destinationFile>
+                            <resultFile>${project.build.directory}/results/extend/yml/result.yml</resultFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>merge-json</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>merge</goal></goals>
+                        <configuration>
+                            <sourceFile>${project.basedir}/src/main/resources/merge/json/source.json</sourceFile>
+                            <destinationFile>${project.basedir}/src/main/resources/merge/json/destination.json</destinationFile>
+                            <resultFile>${project.build.directory}/results/merge/json/result.json</resultFile>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>merge-yaml</id>
                         <phase>process-resources</phase>
                         <goals><goal>merge</goal></goals>
@@ -90,37 +101,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>replace-yaml</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>replace</goal></goals>
-                        <configuration>
-                            <sourceFile>${project.basedir}/src/main/resources/replace/yaml/source.yaml</sourceFile>
-                            <destinationFile>${project.basedir}/src/main/resources/replace/yaml/destination.yaml</destinationFile>
-                            <resultFile>${project.build.directory}/results/replace/yaml/result.yaml</resultFile>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>append-yml</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>append</goal></goals>
-                        <configuration>
-                            <sourceFile>${project.basedir}/src/main/resources/append/yml/source.yml</sourceFile>
-                            <destinationFile>${project.basedir}/src/main/resources/append/yml/destination.yml</destinationFile>
-                            <resultFile>${project.build.directory}/results/append/yml/result.yml</resultFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>extend-yml</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>extend</goal></goals>
-                        <configuration>
-                            <sourceFile>${project.basedir}/src/main/resources/extend/yml/source.yml</sourceFile>
-                            <destinationFile>${project.basedir}/src/main/resources/extend/yml/destination.yml</destinationFile>
-                            <resultFile>${project.build.directory}/results/extend/yml/result.yml</resultFile>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>merge-yml</id>
                         <phase>process-resources</phase>
                         <goals><goal>merge</goal></goals>
@@ -128,6 +108,27 @@
                             <sourceFile>${project.basedir}/src/main/resources/merge/yml/source.yml</sourceFile>
                             <destinationFile>${project.basedir}/src/main/resources/merge/yml/destination.yml</destinationFile>
                             <resultFile>${project.build.directory}/results/merge/yml/result.yml</resultFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>replace-json</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>replace</goal></goals>
+                        <configuration>
+                            <sourceFile>${project.basedir}/src/main/resources/replace/json/source.json</sourceFile>
+                            <destinationFile>${project.basedir}/src/main/resources/replace/json/destination.json</destinationFile>
+                            <resultFile>${project.build.directory}/results/replace/json/result.json</resultFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>replace-yaml</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>replace</goal></goals>
+                        <configuration>
+                            <sourceFile>${project.basedir}/src/main/resources/replace/yaml/source.yaml</sourceFile>
+                            <destinationFile>${project.basedir}/src/main/resources/replace/yaml/destination.yaml</destinationFile>
+                            <resultFile>${project.build.directory}/results/replace/yaml/result.yaml</resultFile>
                         </configuration>
                     </execution>
                     <execution>
