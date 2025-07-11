@@ -26,6 +26,10 @@ public class FileUtils {
         SupportedExtension supportedExtension = SupportedExtension.fromValue(getFileExtension(filePath.getFileName().toString()));
 
         try {
+            Path parentDir = filePath.getParent();
+            if (parentDir != null) {
+                Files.createDirectories(parentDir);
+            }
             supportedExtension.getObjectMapper()
                     .writerWithDefaultPrettyPrinter()
                     .writeValue(filePath.toFile(), data);
