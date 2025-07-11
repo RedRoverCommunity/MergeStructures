@@ -4,12 +4,10 @@ import community.redrover.merge.cli.CliException;
 import community.redrover.merge.cli.CliUtils;
 import community.redrover.merge.model.Strategy;
 import community.redrover.merge.model.config.AbstractStrategyConfig;
-import lombok.Getter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Getter
 public abstract class BaseMojo extends AbstractMojo {
 
     @Parameter(required = true)
@@ -27,17 +25,24 @@ public abstract class BaseMojo extends AbstractMojo {
     public final void execute() throws MojoExecutionException {
         Strategy strategy = getStrategy();
         String goal = strategy.getName();
+
+        getLog().info("[DEBUG] sourceFile = " + sourceFile);
+        getLog().info("[DEBUG] destinationFile = " + destinationFile);
+        getLog().info("[DEBUG] resultFile = " + resultFile);
+
+        if (sourceFile == null || destinationFile == null || resultFile == null) {
+            throw new MojoExecutionException("One or more required parameters are null!");
+        }
+
         String[] args = {
-                "--source", getSourceFile(),
-                "--destination", getDestinationFile(),
-                "--result", getResultFile()
+                "--source", sourceFile,
+                "--destination", destinationFile,
+                "--result", resultFile
         };
 
         try {
             AbstractStrategyConfig config = CliUtils.buildStrategyConfig(args, strategy);
-
             strategy.execute(config);
-
             getLog().info(goal + " strategy completed successfully.");
         } catch (CliException e) {
             mojoErrorHandler(goal, e);
