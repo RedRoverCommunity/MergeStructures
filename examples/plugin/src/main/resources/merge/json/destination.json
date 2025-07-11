@@ -1,6 +1,11 @@
-root:
-key1: value1
-settings:
-theme: dark
-root3:
-enabled: false
+{
+  "root": {
+    "key1": "value1",
+    "settings": {
+      "theme": "dark"
+    }
+  },
+  "root3": {
+    "enabled": false
+  }
+}
