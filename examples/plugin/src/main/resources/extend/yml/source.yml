@@ -1,0 +1,6 @@
+root:
+  key2: value2
+  features:
+    - dark-mode
+  meta:
+    env: dev

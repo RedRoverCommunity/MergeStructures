@@ -1,0 +1,11 @@
+{
+  "root": {
+    "key1": "value1",
+    "features": [
+      "light-mode"
+    ],
+    "meta": {
+      "version": "1.0"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+root1:
+  key: value
+  status: active
+  tags:
+    - a
+    - b
