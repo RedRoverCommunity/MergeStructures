@@ -1,0 +1,8 @@
+{
+  "root": {
+    "key2": "value2",
+    "settings": {
+      "mode": "auto"
+    }
+  }
+}

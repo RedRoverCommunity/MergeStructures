@@ -1,0 +1,6 @@
+root:
+  key: value2
+  replace: true
+  info:
+    updatedBy: admin
+    timestamp: '2024-10-01T12:00:00Z'
