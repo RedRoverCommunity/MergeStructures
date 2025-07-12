@@ -5,19 +5,21 @@
 
     <groupId>community.redrover.merge</groupId>
     <artifactId>merge-structure-examples</artifactId>
-    <version>DEV</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
-
     <name>merge-structure-examples</name>
+
+    <properties>
+        <revision>DEV</revision>
+    </properties>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>community.redrover.merge</groupId>
                 <artifactId>merge-structure-maven-plugin</artifactId>
-                <version>DEV</version>
+                <version>${revision}</version>
                 <executions>
-
                     <execution>
                         <id>append-json</id>
                         <phase>process-resources</phase>
@@ -141,7 +143,6 @@
                             <resultFile>${project.build.directory}/results/replace/result-yml.yml</resultFile>
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
         </plugins>
