@@ -26,14 +26,6 @@ public abstract class BaseMojo extends AbstractMojo {
         Strategy strategy = getStrategy();
         String goal = strategy.getName();
 
-        getLog().info("[DEBUG] sourceFile = " + sourceFile);
-        getLog().info("[DEBUG] destinationFile = " + destinationFile);
-        getLog().info("[DEBUG] resultFile = " + resultFile);
-
-        if (sourceFile == null || destinationFile == null || resultFile == null) {
-            throw new MojoExecutionException("One or more required parameters are null!");
-        }
-
         String[] args = {
                 "--source", sourceFile,
                 "--destination", destinationFile,
